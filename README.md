@@ -18,9 +18,9 @@ This is a web application built using the Django framework.
    python -m venv venv
    
 2. Create a virtual environment and activate it:
-  ```bash
-  source venv/bin/activate  # On Windows: venv\Scripts\activate
-
+   ```bash
+     source venv/bin/activate  # On Windows: venv\Scripts\activate
+ 
 3. Install dependencies:
    ```bash
    pip install django
