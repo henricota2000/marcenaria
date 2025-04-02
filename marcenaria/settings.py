@@ -77,7 +77,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'CODIGO_CLIENTE' : 'IdentificadorUnicoCliente',
+        'NOME_CLIENTE' : 'NomeCompletoCliente',
+        'CPF' : 'CPFcliente',
+        'DATA_NASCIMENTO' : 'DataDeNascimentoCliente',
+        'CEP' : 'CEPdoCliente',
+        'ENDEREÇO' : 'EndereçoDoCliente',
+        'NUMERO' : 'NumeroEndereçoCliente',
+        'COMPLEMENTO' : 'ComplementoEndereçoCliente',
+        'CIDADE' : 'CidadeDoCliente',
+        'ESTADO' : 'EstadoDoCliente',
+        'TELEFONE1' : 'TelefonePrincipalCliente',
+        'TELEFONE2' : 'TelefoneSecundarioCliente',
+        'EMAIL' : 'EmailDoCliente',
+        'HISTORICO_PEDIDOS' : 'HistoricoDePedidosCliente',
+        
+
+        }
 }
 
 
