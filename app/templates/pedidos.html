@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Sistema de Marcenaria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="clientes.html">Clientes</a></li>
+                <li><a href="pedidos.html">Pedidos</a></li>
+            </ul>
+        </nav>
+    </header>
+ 
+    <main>
+        <h1>Cadastro de Pedidos</h1>
+ 
+        <!-- Campo de pesquisa por código -->
+        <div class="search-box">
+            <label for="pesquisaPedido">Pesquisar Pedido por Código:</label>
+            <input type="text" id="pesquisaPedido" name="pesquisaPedido" placeholder="Digite o código">
+            <button type="button">Pesquisar</button>
+        </div>
+ 
+        <form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="codigoPedido">Código Pedido:</label>
+                    <input type="text" id="codigoPedido" name="codigoPedido" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="orcamento">Orçamento:</label>
+                    <input type="text" id="orcamento" name="orcamento">
+                </div>
+            </div>
+ 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pedidoFechado">Pedido Fechado:</label>
+                    <select id="pedidoFechado" name="pedidoFechado">
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cliente">Cliente:</label>
+                    <input type="text" id="cliente" name="cliente">
+                </div>
+            </div>
+ 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dataInicio">Data Início:</label>
+                    <input type="date" id="dataInicio" name="dataInicio">
+                </div>
+                <div class="form-group">
+                    <label for="dataEntrega">Data Entrega:</label>
+                    <input type="date" id="dataEntrega" name="dataEntrega">
+                </div>
+            </div>
+ 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone">
+                </div>
+            </div>
+ 
+            <!-- Endereço de Entrega -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cepEntrega">CEP:</label>
+                    <input type="text" id="cepEntrega" name="cepEntrega" maxlength="9" onblur="buscarEnderecoEntrega()">
+                </div>
+                <div class="form-group">
+                    <label for="enderecoEntrega">Endereço de Entrega:</label>
+                    <input type="text" id="enderecoEntrega" name="enderecoEntrega">
+                </div>
+            </div>
+ 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="numeroEntrega">Número:</label>
+                    <input type="text" id="numeroEntrega" name="numeroEntrega">
+                </div>
+                <div class="form-group">
+                    <label for="complementoEntrega">Complemento:</label>
+                    <input type="text" id="complementoEntrega" name="complementoEntrega">
+                </div>
+            </div>
+ 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cidadeEntrega">Cidade:</label>
+                    <input type="text" id="cidadeEntrega" name="cidadeEntrega">
+                </div>
+                <div class="form-group">
+                    <label for="estadoEntrega">Estado:</label>
+                    <input type="text" id="estadoEntrega" name="estadoEntrega">
+                </div>
+            </div>
+ 
+            <!-- Situação e Forma de Pagamento (movidos para o final) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="situacao">Situação:</label>
+                    <select id="situacao" name="situacao">
+                        <option value="nao_iniciado">Não Iniciado</option>
+                        <option value="em_andamento">Em Andamento</option>
+                        <option value="finalizado">Finalizado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="formaPagamento">Forma de Pagamento:</label>
+                    <select id="formaPagamento" name="formaPagamento" onchange="habilitarParcelas()">
+                        <option value="pix">Pix</option>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="debito">Cartão de Débito</option>
+                        <option value="credito">Cartão de Crédito</option>
+                    </select>
+                </div>
+            </div>
+ 
+            <div class="form-row" id="parcelasGroup" style="display: none;">
+                <div class="form-group">
+                    <label for="parcelas">Parcelas:</label>
+                    <select id="parcelas" name="parcelas">
+                        <option value="1">1x</option>
+                        <option value="2">2x</option>
+                        <option value="3">3x</option>
+                        <option value="4">4x</option>
+                        <option value="5">5x</option>
+                        <option value="6">6x</option>
+                        <option value="7">7x</option>
+                        <option value="8">8x</option>
+                        <option value="9">9x</option>
+                        <option value="10">10x</option>
+                        <option value="11">11x</option>
+                        <option value="12">12x</option>
+                    </select>
+                </div>
+            </div>
+ 
+            <!-- Botões -->
+            <div class="button-group">
+                <button type="submit">Salvar</button>
+                <button type="button" class="edit-button">Editar</button>
+            </div>
+        </form>
+    </main>
+ 
+    <script>
+        // Função para buscar endereço de entrega via CEP usando a API ViaCEP
+        function buscarEnderecoEntrega() {
+            const cep = document.getElementById('cepEntrega').value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                alert('CEP inválido!');
+                return;
+            }
+ 
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert('CEP não encontrado!');
+                        return;
+                    }
+                    document.getElementById('enderecoEntrega').value = data.logradouro;
+                    document.getElementById('cidadeEntrega').value = data.localidade;
+                    document.getElementById('estadoEntrega').value = data.uf;
+                })
+                .catch(() => alert('Erro ao buscar CEP!'));
+        }
+ 
+        // Função para habilitar/desabilitar o campo de parcelas
+        function habilitarParcelas() {
+            const formaPagamento = document.getElementById('formaPagamento').value;
+            const parcelasGroup = document.getElementById('parcelasGroup');
+            parcelasGroup.style.display = formaPagamento === 'credito' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
+ 
