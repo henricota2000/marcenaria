@@ -9,3 +9,9 @@ def home(request):
         'current_time': datetime.now()
     }
     return render(request, 'home.html', context)
+
+def clientes(request):
+    return render(request, 'clientes.html')
+
+def pedidos(request):
+    return render(request, 'pedidos.html')
