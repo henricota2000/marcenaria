@@ -1,0 +1,69 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\lista_clientes.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <style> 
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; } 
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; } 
+        input[type="text"] { padding: 5px; width: 300px; } 
+        .search-box { margin-bottom: 20px; } 
+        .search-box input { margin-right: 10px; } 
+    </style> 
+</head> 
+<body> 
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'clientes' %}">Clientes</a></li>
+                <li><a href="{% url 'lista_clientes' %}">Lista de Clientes</a></li>
+                <li><a href="{% url 'pedidos' %}">Pedidos</a></li>
+                <li><a href="{% url 'lista_pedidos' %}">Lista de Pedidos e Orçamentos</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h2>Buscar Clientes</h2> 
+    <form method="get" class="search-box"> 
+        <input type="text" name="q" placeholder="Digite o nome" value="{{ termo }}"> 
+        <button type="submit">Buscar</button> 
+    </form> 
+    <h1>Lista de Clientes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cpf }}</td>
+                <td>{{ cliente.email }}</td>
+                <td>{{ cliente.telefone1 }}</td>
+                <td>{{ cliente.cidade }}</td>
+                <td>{{ cliente.estado }}</td>
+                <td>
+                <a href="{% url 'excluir_cliente' cliente.id %}" onclick="return confirm('Tem certeza que deseja excluir este cliente?');">Excluir</a>
+                <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+                <a href="{% url 'detalhes_cliente' cliente.id %}">Detalhes</a>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhum cliente encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body> 
+</html>

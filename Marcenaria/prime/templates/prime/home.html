@@ -1,0 +1,145 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\home.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sistema Marcenaria Nunes</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <style>
+        /* Estilos gerais */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9e7e5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Faixa superior com logo */
+        .header {
+            background-color: #9e9e9e;
+            color: rgb(63, 60, 60);
+            padding: 7px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .header-logo {
+            position: absolute;
+            left: 20px;
+            height: 40px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        /* Container principal */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        /* Container dos botões */
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 500px;
+        }
+        
+        /* Estilo dos botões */
+        .myButton {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 0px 0px 2px #acb2c5;
+            background: linear-gradient(to bottom, #7d8697 5%, #4d5a69 100%);
+            background-color: #737477;
+            border-radius: 10px;
+            border: 1px solid #606164;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 16px;
+            padding: 20px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #4f535f;
+            width: 180px;
+            height: 180px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Ícones */
+        .myButton img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        /* Efeitos */
+        .myButton:hover {
+            background: linear-gradient(to bottom, #919397 5%, #686a6e 100%);
+            background-color: #5e656e;
+            transform: translateY(-3px);
+        }
+        
+        .myButton:active {
+            transform: translateY(1px);
+        }
+        
+        /* Faixa inferior fixa */
+        .footer {
+            background-color: #9e9e9e;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Faixa superior com logo -->
+        <div class="header">
+        <img src="{% static 'image/logo.png' %}" alt="Logo Marcenaria Nunes" class="header-logo">
+        <h1>Sistema Marcenaria Nunes</h1>
+    </div>
+    
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <div class="button-container">
+            <!-- Botão Clientes -->
+            <a href="{% url 'clientes' %}" class="myButton">
+                <img src="{% static 'image/clientes.png' %}" alt="Clientes">
+                <span>CLIENTES</span>
+            </a>
+            
+<!-- Botão Pedidos -->
+            <a href="{% url 'pedidos' %}" class="myButton">
+                <img src="{% static 'image/pedidos.png' %}" alt="Pedidos">
+                <span>PEDIDOS</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Faixa inferior -->
+    <div class="footer">
+        &copy; 2023 Marcenaria Nunes. Todos os direitos reservados.
+    </div>
+</body>
+</html>

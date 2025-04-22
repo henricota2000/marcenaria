@@ -1,0 +1,151 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\clientes.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Clientes</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'clientes' %}">Clientes</a></li>
+                <li><a href="{% url 'lista_clientes' %}">Lista de Clientes</a></li>
+                <li><a href="{% url 'pedidos' %}">Pedidos</a></li>
+                <li><a href="{% url 'lista_pedidos' %}">Lista de Pedidos e Orçamentos</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h1>Cadastro de Clientes</h1>
+
+        {% if error %}
+        <div class="error-message">
+            <p style="color: red;">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <form action="{% url 'clientes' %}" method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="codigoCliente">Código Cliente:</label>
+                    <input type="text" id="codigoCliente" name="codigoCliente" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" required>
+                </div>
+                <div class="form-group">
+                    <label for="rg">RG:</label>
+                    <input type="text" id="rg" name="rg" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dataNascimento">Data de Nascimento:</label>
+                    <input type="date" id="dataNascimento" name="dataNascimento">
+                </div>
+                <div class="form-group">
+                    <label for="cep">CEP:</label>
+                    <input type="text" id="cep" name="cep" maxlength="9" onblur="buscarEndereco();" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="endereco">Endereço:</label>
+                    <input type="text" id="endereco" name="endereco">
+                </div>
+                <div class="form-group">
+                    <label for="numero">Número:</label>
+                    <input type="text" id="numero" name="numero">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="complemento">Complemento:</label>
+                    <input type="text" id="complemento" name="complemento">
+                </div>
+                <div class="form-group">
+                    <label for="cidade">Cidade:</label>
+                    <input type="text" id="cidade" name="cidade">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <input type="text" id="estado" name="estado">
+                </div>
+                <div class="form-group">
+                    <label for="telefone1">Telefone 1:</label>
+                    <input type="text" id="telefone1" name="telefone1" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefone2">Telefone 2:</label>
+                    <input type="text" id="telefone2" name="telefone2">
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="historicoPedidos">Histórico de Pedidos:</label>
+                    <textarea id="historicoPedidos" name="historicoPedidos"></textarea>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="button-group">
+                <button type="submit">Salvar</button>
+                <button type="reset">Limpar</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Função para buscar endereço via CEP usando a API ViaCEP
+        function buscarEndereco() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                alert('CEP inválido!');
+                return;
+            }
+
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert('CEP não encontrado!');
+                        return;
+                    }
+                    document.getElementById('endereco').value = data.logradouro;
+                    document.getElementById('cidade').value = data.localidade;
+                    document.getElementById('estado').value = data.uf;
+                })
+                .catch(() => alert('Erro ao buscar CEP!'));
+        }
+    </script>
+</body>
+</html>

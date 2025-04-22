@@ -1,0 +1,82 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\lista_pedidos.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LISTA DE PEDIDOS</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        input[type="text"] {
+            padding: 5px;
+            width: 300px;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'clientes' %}">Clientes</a></li>
+                <li><a href="{% url 'lista_clientes' %}">Lista de Clientes</a></li>
+                <li><a href="{% url 'pedidos' %}">Pedidos</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Lista de Pedidos</h1>
+    <form method="get" class="search-box">
+        <input type="text" name="q" placeholder="Digite o nome" value="{{ termo }}">
+        <button type="submit">Buscar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Descrição</th>
+                <th>Data</th>
+                <th>Valor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for pedido in pedidos %}
+            <tr>
+                <td>{{ pedido.id }}</td>
+                <td>{{ pedido.cliente.nome }}</td>
+                <td>{{ pedido.descricao }}</td>
+                <td>{{ pedido.data_pedido }}</td>
+                <td>R$ {{ pedido.valor_total }}</td>
+                <td>
+                    <a href="{% url 'gerar_pdf_pedido' pedido.id %}">Gerar PDF</a> |
+                    <a href="{% url 'excluir_pedido' pedido.id %}" onclick="return confirm('Tem certeza que deseja excluir este pedido?');">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">Nenhum pedido encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
