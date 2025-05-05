@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LISTA DE PEDIDOS</title>
+    <title>Lista de Pedidos</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <style>
         table {
@@ -27,6 +27,23 @@
         }
         .search-box input {
             margin-right: 10px;
+        }
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+        }
+        .btn-edit {
+            background-color: #4CAF50;
+        }
+        .btn-pdf {
+            background-color: #007BFF;
+        }
+        .btn-delete {
+            background-color: #FF0000;
         }
     </style>
 </head>
@@ -52,28 +69,35 @@
                 <th>ID</th>
                 <th>Cliente</th>
                 <th>Descrição</th>
-                <th>Data</th>
-                <th>Valor</th>
+                <th>Data do Pedido</th>
+                <th>Forma de Pagamento</th>
+                <th>Valor Total</th>
+                <th>Parcelas</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-            
             {% for pedido in pedidos %}
             <tr>
                 <td>{{ pedido.id }}</td>
-                <td>{{ pedido.cliente.nome }}</td>
-                <td>{{ pedido.descricao }}</td>
-                <td>{{ pedido.data_pedido }}</td>
-                <td>R$ {{ pedido.valor_total }}</td>
+                <td>{{ pedido.cliente.nome|default:"N/A" }}</td>
+                <td>{{ pedido.descricao|default:"N/A" }}</td>
+                <td>{{ pedido.data_pedido|date:"d/m/Y" }}</td>
+                <td>{{ pedido.forma_pagamento|default:"N/A" }}</td>
+                <td>{{ pedido.valor_total|floatformat:2 }}</td>
+                <td>{{ pedido.parcelas|default:"N/A" }}</td>
                 <td>
-                    <a href="{% url 'gerar_pdf_pedido' pedido.id %}">Gerar PDF</a> |
-                    <a href="{% url 'excluir_pedido' pedido.id %}" onclick="return confirm('Tem certeza que deseja excluir este pedido?');">Excluir</a>
+                    <a href="{% url 'editar_pedido' pedido.id %}" class="btn btn-edit">Editar</a>
+                    <a href="{% url 'detalhar_pedido_pdf' pedido.id %}" class="btn btn-pdf">PDF</a>
+                    <form method="post" action="{% url 'excluir_pedido' pedido.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('Tem certeza que deseja excluir este pedido?');">Excluir</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6">Nenhum pedido encontrado.</td>
+                <td colspan="8">Nenhum pedido encontrado.</td>
             </tr>
             {% endfor %}
         </tbody>

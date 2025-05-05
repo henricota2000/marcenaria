@@ -1,15 +1,16 @@
 from django.urls import path
-from . import views
+from . import views  # Certifique-se de que esta linha está presente
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.home, name='home'),  # Certifique-se de que a função 'home' existe em 'views.py'
     path('clientes/', views.clientes, name='clientes'),
     path('lista_clientes/', views.lista_clientes, name='lista_clientes'),
-    path('pedidos/', views.pedidos, name='pedidos'),
+    path('pedidos/', views.cadastrar_pedido, name='pedidos'),
     path('lista_pedidos/', views.lista_pedidos, name='lista_pedidos'),
-    path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Nova rota para detalhes do cliente
-    path('cliente/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),  # Nova rota para excluir cliente
-    path('cliente/editar/<int:id>/', views.editar_cliente, name='editar_cliente'),  # Nova rota para editar cliente
-    path('pedido/pdf/<int:id>/', views.gerar_pdf_pedido, name='gerar_pdf_pedido'),  # Rota para gerar PDF
-    path('pedido/excluir/<int:id>/', views.excluir_pedido, name='excluir_pedido'),  # Rota para excluir pedido
+    path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Rota para detalhes do cliente
+    path('cliente/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),  # Rota para excluir cliente
+    path('cliente/editar/<int:cliente_id>/', views.editar_cliente, name='editar_cliente'),  # Rota para editar cliente
+    path('editar_pedido/<int:pedido_id>/', views.editar_pedido, name='editar_pedido'),
+    path('excluir_pedido/<int:pedido_id>/', views.excluir_pedido, name='excluir_pedido'),
+    path('detalhar_pedido_pdf/<int:pedido_id>/', views.detalhar_pedido_pdf, name='detalhar_pedido_pdf'),
 ]
