@@ -13,6 +13,12 @@ def home(request):
 
 def clientes(request):
     if request.method == 'POST':
+         # Verifica se o CPF ou RG já existem no banco de dados
+        if Cliente.objects.filter(cpf=request.POST.get('cpf')).exists():
+            return render(request, 'prime/clientes.html', {'error': 'CPF já cadastrado.'})
+        if Cliente.objects.filter(rg=request.POST.get('rg')).exists():
+            return render(request, 'prime/clientes.html', {'error': 'RG já cadastrado.'})
+
         try:
             # Cria um novo cliente com os dados do formulário
             novo_cliente = Cliente(

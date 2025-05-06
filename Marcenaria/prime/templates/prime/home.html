@@ -123,17 +123,27 @@
     <!-- Conteúdo principal -->
     <div class="main-content">
         <div class="button-container">
-            <!-- Botão Clientes -->
+            <!-- Botão superior -->
             <a href="{% url 'clientes' %}" class="myButton">
                 <img src="{% static 'image/clientes.png' %}" alt="Clientes">
                 <span>CLIENTES</span>
             </a>
-            
-<!-- Botão Pedidos -->
             <a href="{% url 'pedidos' %}" class="myButton">
                 <img src="{% static 'image/pedidos.png' %}" alt="Pedidos">
                 <span>PEDIDOS</span>
             </a>
+           
+            
+<!-- Botão inferior -->
+            <a href="{% url 'lista_clientes' %}" class="myButton">
+                <img src="{% static 'image/lista_clientes.png' %}" alt="Lista">
+                <span>LISTA DE CLIENTES</span>
+            </a>
+            <a href="{% url 'lista_pedidos' %}" class="myButton">
+                <img src="{% static 'image/lista_pedidos.png' %}" alt="Lista">
+                <span>LISTA DE PEDIDOS</span>
+            </a>
+            
         </div>
             </div>
     
