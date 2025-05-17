@@ -207,14 +207,14 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="nomeCliente">Nome Cliente:</label>
-                    <input type="text" id="nomeCliente" name="nomeCliente" value="{{ pedido.nome_cliente }}">
+                    <input type="text" id="nomeCliente" name="nomeCliente" value="{{ pedido.cliente.nome }}" required>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="dataInicio">Data Início:</label>
-                    <input type="date" id="dataInicio" name="dataInicio" value="{{ pedido.data_inicio|date:'Y-m-d' }}">
+                    <input type="date" id="dataInicio" name="dataInicio" value="{{ pedido.data_pedido|date:'Y-m-d' }}">
                 </div>
                 <div class="form-group">
                     <label for="dataEntrega">Data Entrega:</label>
@@ -225,40 +225,40 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="telefone">Telefone:</label>
-                    <input type="text" id="telefone" name="telefone" value="{{ pedido.telefone }}">
+                    <input type="text" id="telefone" name="telefone" value="{{ pedido.cliente.telefone1 }}">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="cepEntrega">CEP Entrega:</label>
-                    <input type="text" id="cepEntrega" name="cepEntrega" value="{{ pedido.cep_entrega }}">
+                    <input type="text" id="cepEntrega" name="cepEntrega" value="{{ pedido.cliente.cep }}">
                 </div>
                 <div class="form-group">
                     <label for="enderecoEntrega">Endereço Entrega:</label>
-                    <input type="text" id="enderecoEntrega" name="enderecoEntrega" value="{{ pedido.endereco_entrega }}">
+                    <input type="text" id="enderecoEntrega" name="enderecoEntrega" value="{{ pedido.cliente.endereco }}">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="numeroEntrega">Número:</label>
-                    <input type="text" id="numeroEntrega" name="numeroEntrega" value="{{ pedido.numero_entrega }}">
+                    <input type="text" id="numeroEntrega" name="numeroEntrega" value="{{ pedido.cliente.numero }}">
                 </div>
                 <div class="form-group">
                     <label for="complementoEntrega">Complemento:</label>
-                    <input type="text" id="complementoEntrega" name="complementoEntrega" value="{{ pedido.complemento_entrega }}">
+                    <input type="text" id="complementoEntrega" name="complementoEntrega" value="{{ pedido.cliente.complemento }}">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="cidadeEntrega">Cidade:</label>
-                    <input type="text" id="cidadeEntrega" name="cidadeEntrega" value="{{ pedido.cidade_entrega }}">
+                    <input type="text" id="cidadeEntrega" name="cidadeEntrega" value="{{ pedido.cliente.cidade }}">
                 </div>
                 <div class="form-group">
                     <label for="estadoEntrega">Estado:</label>
-                    <input type="text" id="estadoEntrega" name="estadoEntrega" value="{{ pedido.estado_entrega }}">
+                    <input type="text" id="estadoEntrega" name="estadoEntrega" value="{{ pedido.cliente.estado }}">
                 </div>
             </div>
 
@@ -310,13 +310,15 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="obsGeral">OBS Geral:</label>
-                    <textarea id="obsGeral" name="obsGeral" rows="3">{{ pedido.obs_geral }}</textarea>
+                    <textarea id="obsGeral" name="obsGeral" rows="3">{{ pedido.descricao }}</textarea>
                 </div>
             </div>
 
             <button type="submit">Salvar Alterações</button>
         </form>
+            
     </main>
+    
 
     <script>
         // Função para calcular o subtotal com base nos itens
@@ -370,8 +372,8 @@
         }
 
         // Adiciona eventos para recalcular os valores ao alterar os campos
-        document.addEventListener('input', (event) => {
-            if (event.target.matches('select[name^="quantidadeItem"], input[name^="valorUnitarioItem"], input[name="acrescimo"], input[name="desconto"], select[name="parcelas"]')) {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof calcularSubtotal === 'function') {
                 calcularSubtotal();
             }
         });

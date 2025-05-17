@@ -47,27 +47,57 @@ def clientes(request):
 
 def cadastrar_pedido(request):
     if request.method == 'POST':
-        print(request.POST)  # Verificar os dados enviados pelo formulário
+
+        cliente_id = request.POST.get('nomeCliente')
         cliente_id = request.POST.get('cliente')
         cliente = get_object_or_404(Cliente, id=cliente_id)
-        descricao = request.POST.get('descricao') or "Sem descrição"  # Valor padrão caso esteja vazio
-        data_pedido = request.POST.get('dataInicio')
-        forma_pagamento = request.POST.get('formaPagamento')
-        parcelas = int(request.POST.get('parcelas', 1))
-        valor_total = float(request.POST.get('valorTotal', 0))
+        # Dados do pedido
+        descricao = request.POST.get('obsGeral') or ''
+        data_pedido = request.POST.get('dataInicio') or None
+        data_entrega = request.POST.get('dataEntrega') or None
+        forma_pagamento = request.POST.get('formaPagamento') or ''
+        parcelas = int(request.POST.get('parcelas') or 1)
+        valor_total = float(request.POST.get('valorTotal') or 0)
+        valor_parcela = float(request.POST.get('valorParcela') or 0)
+        subtotal = float(request.POST.get('subtotal') or 0)
+        acrescimo = float(request.POST.get('acrescimo') or 0)
+        desconto = float(request.POST.get('desconto') or 0)
+        situacao = request.POST.get('situacao') or 'nao_iniciado'
+        pedido_fechado = request.POST.get('pedidoFechado') == 'sim'
 
-        # Salva o pedido no banco de dados
-        Pedido.objects.create(
+        pedido = Pedido.objects.create(
             cliente=cliente,
             descricao=descricao,
             data_pedido=data_pedido,
+            data_entrega=data_entrega,
             forma_pagamento=forma_pagamento,
+            parcelas=parcelas,
             valor_total=valor_total,
-            parcelas=parcelas
+            valor_parcela=valor_parcela,
+            subtotal=subtotal,
+            acrescimo=acrescimo,
+            desconto=desconto,
         )
 
-        return redirect('lista_pedidos')  # Redireciona para a lista de pedidos
+        # Salvar itens do pedido
+        for i in range(1, 6):
+            descricao_item = request.POST.get(f'descricaoItem{i}')
+            quantidade = request.POST.get(f'quantidadeItem{i}')
+            valor_unitario = request.POST.get(f'valorUnitarioItem{i}')
+            total = request.POST.get(f'totalItem{i}')
 
+            if descricao_item and valor_unitario:
+                ItemPedido.objects.create(
+                    pedido=pedido,
+                    descricao=descricao_item,
+                    quantidade=int(quantidade or 0),
+                    valor_unitario=float(valor_unitario or 0),
+                    total=float(total or 0)
+                )
+
+        return redirect('lista_pedidos')
+
+    # GET
     clientes = Cliente.objects.all()
     return render(request, 'prime/pedidos.html', {'clientes': clientes})
 
@@ -166,6 +196,7 @@ def excluir_pedido(request, pedido_id):
 
 def editar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
+   
 
     if request.method == 'POST':
         # Atualiza os campos do pedido
@@ -189,7 +220,8 @@ def editar_pedido(request, pedido_id):
         pedido.situacao = request.POST.get('situacao')
         pedido.forma_pagamento = request.POST.get('formaPagamento')
         pedido.parcelas = request.POST.get('parcelas') or 1
-
+        pass
+    
         # Salva o pedido
         pedido.save()
 
@@ -198,6 +230,10 @@ def editar_pedido(request, pedido_id):
 
     context = {
         'pedido': pedido,
+        'nomeCliente': pedido.cliente.nome,
+        
+         
+           
     }
     return render(request, 'prime/editar_pedido.html', context)
 

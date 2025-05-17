@@ -1,7 +1,10 @@
+from django.contrib import admin
 from django.urls import path
 from . import views  # Certifique-se de que esta linha está presente
 
+
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.home, name='home'),  # Certifique-se de que a função 'home' existe em 'views.py'
     path('clientes/', views.clientes, name='clientes'),
     path('lista_clientes/', views.lista_clientes, name='lista_clientes'),

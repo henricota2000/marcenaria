@@ -1,3 +1,4 @@
+<!-- DEBUG: Template pedidos.html carregado -->
 <!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\pedidos.html -->
 {% load static %}
 <!DOCTYPE html>
@@ -211,7 +212,7 @@
 <main>
     <h1>Cadastro de Pedidos</h1>
 
-    <form method="post" action="{% url 'pedidos' %}">
+    <form method="post">
         {% csrf_token %}
         <div class="form-row">
             <div class="form-group">
@@ -219,7 +220,7 @@
                 <input type="text" id="codigoPedido" name="codigoPedido" readonly>
             </div>
             <div class="form-group">
-                <label for="cliente">Cliente:</label>
+                <label for="nomecliente">Cliente:</label>
                 <select id="cliente" name="cliente" required>
                     <option value="" disabled selected>Selecione um cliente</option>
                     {% for cliente in clientes %}
