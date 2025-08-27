@@ -1,155 +1,148 @@
-<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\home.html -->
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
+<!doctype html>
+<!--
+Projeto integrador UNIVESP 
+Jaqueline Patricia de Almeida Souza..23216212
+Hernane Bini.........................2111014
+Leandro Alexander Bueno..............23219672
+Robson Izaias Fontes.................23214493
+Lucas de Oliveira Silva..............23201090
+Marcelo Jodi Maezono.................1800754
+Henrique Fernandez do Nascimento.....23214277 
+-->
+<html class="home blog no-js" lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Sistema Marcenaria Nunes</title>
-    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
-    <style>
-        /* Estilos gerais */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #e9e7e5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Faixa superior com logo */
-        .header {
-            background-color: #9e9e9e;
-            color: rgb(63, 60, 60);
-            padding: 7px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .header-logo {
-            position: absolute;
-            left: 20px;
-            height: 40px;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-        
-        /* Container principal */
-        .main-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        /* Container dos botões */
-        .button-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 500px;
-        }
-        
-        /* Estilo dos botões */
-        .myButton {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0px 0px 0px 2px #acb2c5;
-            background: linear-gradient(to bottom, #7d8697 5%, #4d5a69 100%);
-            background-color: #737477;
-            border-radius: 10px;
-            border: 1px solid #606164;
-            cursor: pointer;
-            color: #ffffff;
-            font-family: Arial;
-            font-size: 16px;
-            padding: 20px;
-            text-decoration: none;
-            text-shadow: 0px 1px 0px #4f535f;
-            width: 180px;
-            height: 180px;
-            transition: all 0.3s ease;
-        }
-        
-        /* Ícones */
-        .myButton img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 10px;
-        }
-        
-        /* Efeitos */
-        .myButton:hover {
-            background: linear-gradient(to bottom, #919397 5%, #686a6e 100%);
-            background-color: #5e656e;
-            transform: translateY(-3px);
-        }
-        
-        .myButton:active {
-            transform: translateY(1px);
-        }
-        
-        /* Faixa inferior fixa */
-        .footer {
-            background-color: #9e9e9e;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 12px;
-            position: sticky;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <title>Projeto Integrador UNIVESP</title>
+    <meta charset="UTF-8"/>
+    <!-- Fontes externas -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Lato:400,700,400italic,700italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap">
+    <!-- CSS do projeto -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <!-- JS do projeto -->
+    <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
 </head>
-<body>
-    <!-- Faixa superior com logo -->
-        <div class="header">
-        <img src="{% static 'image/logo.png' %}" alt="Logo Marcenaria Nunes" class="header-logo">
-        <h1>Sistema Marcenaria Nunes</h1>
-    </div>
-    
-    <!-- Conteúdo principal -->
-    <div class="main-content">
-        <div class="button-container">
-            <!-- Botão superior -->
-            <a href="{% url 'clientes' %}" class="myButton">
-                <img src="{% static 'image/clientes.png' %}" alt="Clientes">
-                <span>CLIENTES</span>
-            </a>
-            <a href="{% url 'pedidos' %}" class="myButton">
-                <img src="{% static 'image/pedidos.png' %}" alt="Pedidos">
-                <span>PEDIDOS</span>
-            </a>
-           
-            
-<!-- Botão inferior -->
-            <a href="{% url 'lista_clientes' %}" class="myButton">
-                <img src="{% static 'image/lista_clientes.png' %}" alt="Lista">
-                <span>LISTA DE CLIENTES</span>
-            </a>
-            <a href="{% url 'lista_pedidos' %}" class="myButton">
-                <img src="{% static 'image/lista_pedidos.png' %}" alt="Lista">
-                <span>LISTA DE PEDIDOS</span>
-            </a>
-            
-        </div>
+<body class="home sticky-menu sidebar-off" id="top">
+
+<header class="header">
+    <div class="header-wrap">
+        <div class="logo plain logo-left">
+            <div class="logo">
+                <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt=""/>
             </div>
-    
-    <!-- Faixa inferior -->
-    <div class="footer">
-        &copy; 2023 Marcenaria Nunes. Todos os direitos reservados.
+        </div><!-- /logo do nunes -->
+
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item"><a href="{% url 'clientes' %}">Novo Cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     </div>
+</header>
+
+<div class="hero" style="background-image: url('{% static "image/wallpaper-nunes.jpg" %}')">
+    <div class="hero-inner">
+        <div class="inner">
+            <h1><span class="border border-top border-bottom">Sistema</span></h1>
+            <div class="hero-line-one"></div>
+            <div class="hero-line-two"><span class="border border-bottom"><a href="https://univesp.br/" style="color:#FFF;">by UNIVESP</a></span></div>
+        </div>
+    </div>
+</div>
+<div class="home-sticky" id="content">
+    <h2 class="home-sticky-title">Funções do sistema</h2>
+    <div class="sticky-inner">
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'pedidos' %}">
+                    <img src="{% static 'image/novo-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'pedidos' %}">Novo pedido</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'pedidos' %}">Cadastro de orçamentos e pedidos</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'clientes' %}">
+                    <img width="400" height="400" src="{% static 'image/novo-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'clientes' %}">Novo Cliente</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'clientes' %}">Cadastro de novo Cliente</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'lista_clientes' %}">
+                    <img width="400" height="400" src="{% static 'image/busca-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'lista_clientes' %}">Buscar pedido</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'lista_clientes' %}">Pesquisa por orçamentos e pedidos</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'lista_pedidos' %}">
+                    <img width="100" height="100" src="{% static 'image/busca-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'lista_pedidos' %}">Buscar Cliente</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'lista_pedidos' %}">Pesquisar e atualizar cadastros</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-wrap">
+        <div id="footer-text">2025 UNIVESP. Designed by grupo DRP04-PJI240-SALA-004 GRUPO-009</div>
+    </div>
+</footer>
+
 </body>
 </html>
