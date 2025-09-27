@@ -1,0 +1,898 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" type="text/css" media="screen"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+                    
+         body {
+             /*background-image: url('images/fundo.jpg');/*Caso o grupo optar por imagem de fundo
+             background-size: cover; /* ajusta a imagem para cobrir toda a área */
+            /* background-repeat: repeat; /* evita repetição da imagem */
+            /* background-position: center; /* centraliza a imagem */
+            /* background-color: #f5f5f5; /* cor de fundo caso a imagem não carregue */
+           
+             min-height: 100vh; /* garante altura mínima da tela */
+             background: linear-gradient(to bottom, #c5cce4, #eaebec);
+             background-repeat: no-repeat;
+              background-attachment: fixed; /* mantém o fundo fixo ao rolar */
+             background-size: 100% 100%; /* estica o gradiente para cobrir toda a altura */
+            background-position: top;
+
+
+            /*background-color: #f5f5f5;/*Antigo somente cor
+            color: #333;
+            line-height: 1.6;*/
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 20px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #444;
+            font-family: 'times new roman', 'Arial', sans-serif;
+
+        }
+        .search-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .search-box label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .search-box input {
+            width: calc(100% - 100px);
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-box button {
+            width: 90px;
+            padding: 8px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        /*Para tamanho dos endeços*/
+        .form-group.cep { flex: 0.8; }     
+        .form-group.endereco { flex: 3; }   
+        .form-group.numero { flex: 0.3; } 
+        .form-group.complemento { flex: 0.6; } 
+        .form-group.cidade { flex: 1; }   
+        .form-group.estado { flex: 0.3; }   /* Bem pequeno para sigla */
+
+
+        /*FORM do produto */
+        .form-group.item { flex: 0.5 ;}     
+        .form-group.descricao { flex: 8 ; }   
+        .form-group.quantidade { flex: 1 ; } 
+        .form-group.valoruni { flex: 2; }   
+        .form-group.total { flex: 2 ; }
+
+
+        .form-group {
+            flex: 1;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input[type="number"] {
+            text-align: right;
+        }
+        .form-group input[readonly] {
+            background-color: #f0f0f0;
+        }
+        .item-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: flex-end;
+        }
+        .item-row .form-group {
+            /*flex: 1;*/
+            min-width: 0;
+        }
+
+/*botões*/
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+         button.cancelar{
+            background-color: #e44545;
+            color: white;
+        }
+                
+         button.novo{
+            background-color: #0516b4;
+            color: #ffffff;
+        }
+        button.edit-button {
+            background-color: #007bff;
+            color: white;
+        }
+        button.print-button {
+            background-color: #6c757d;
+            color: white;
+        }
+
+
+
+        h2 {
+            margin: 25px 0 15px;
+            color: #444;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .financial-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        /* Estilos para os campos financeiros alinhados */
+        .financial-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .financial-label {
+            width: 120px;
+            padding: 8px 10px 0 0;
+            text-align: right;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .financial-input {
+            width: 150px; /* Mesma largura dos campos Total dos itens */
+        }
+        .financial-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: right;
+        }
+        .financial-input input[readonly] {
+            background-color: #f0f0f0;
+        }
+        .financial-total {
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            font-weight: bold;
+        }
+
+/*impressão*/
+@media print {
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+    
+
+    * {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+
+    /* Oculta botões e menus */
+    header, nav, .button-group {
+        display: none !important;
+    }
+
+    /* Remove contorno de inputs e selects */
+    input, select, textarea {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        appearance: none;
+        -webkit-appearance: none;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Estilo "folha limpa" */
+    main {
+        box-shadow: none !important;
+        border: 1px solid #000;
+        padding: 10px !important;
+        background: #fff !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Reduz espaçamento entre grupos de formulário */
+    .form-group {
+        margin-bottom: 4px !important;
+        padding: 2px !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Rodapé com data e nome */
+    body::after {
+        content: "Impresso em: " attr(data-date) " | Marcenaria Nunes | Orçamento válido por 10 dias" ;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 10px;
+        border-top: 1px solid #000;
+        padding: 5px;
+    }
+}
+
+
+/* ===== Tema Claro (padrão) ===== */
+body.claro {
+               background: linear-gradient(to bottom, #c5cce4, #eaebec);
+             background-repeat: no-repeat;
+              background-attachment: fixed; /* mantém o fundo fixo ao rolar */
+             background-size: 100% 100%; /* estica o gradiente para cobrir toda a altura */
+            background-position: top;
+}
+ 
+body.claro main {
+  background-color: #fff;
+  color: #222;
+}
+
+body.escuro {
+
+            background: linear-gradient(to bottom, #3a3a3a, #616161);
+             background-repeat: no-repeat;
+              background-attachment: fixed; /* mantém o fundo fixo ao rolar */
+             background-size: 100% 100%; /* estica o gradiente para cobrir toda a altura */
+            background-position: top;
+}
+ 
+body.escuro main {
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+
+}
+ 
+body.escuro input,
+body.escuro select,
+body.escuro textarea {
+  background-color: #555;
+  color: #fff;
+  border: 1px solid #888;
+}
+ 
+body.escuro .search-box {
+  background-color: #555;
+}
+body.claro .financial-section {
+  background-color: #e9e9e9; /* cinza claro no modo claro */
+  color: #222; /* texto escuro */
+}
+ 
+ 
+/* Botão escuro */
+.botao-escuro {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+ 
+/* Botão claro */
+.botao-claro {
+  background-color: #eee;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+body.escuro .financial-section {
+  background-color: #4e4b4b; /* cinza escuro no modo escuro */
+  color: #f0f0f0; /* texto claro */
+}
+
+body.claro h1 {
+  color: #555; /* cinza no modo claro */
+}
+  
+body.escuro h1 {
+  color: #fff; /* branco no modo escuro */
+}
+body.escuro h2 {
+  color: #fff; /* branco no modo escuro */
+}
+body.escuro #campovalor {
+  background-color: #444141; /* cinza escuro */
+  color: #fff;            /* texto claro */
+  border: 1px solid #888;
+}
+body.escuro #codigopedido {
+  background-color: #444141; /* cinza escuro */
+  color: #fff;            /* texto claro */
+  border: 1px solid #888;
+}
+body.escuro input[readonly],
+body.escuro #codigoPedido[readonly] {
+    background-color: #444141 !important;
+    color: #fff !important;
+    border: 1px solid #888 !important;
+}
+</style>
+</head>
+<body class="home sticky-menu sidebar-off claro" id="top">
+<header class="header">
+    <div class="header-wrap">
+        <div class="logo plain logo-left">
+            <div class="logo">
+                <a href="{% url 'home' %}">
+                    <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt="Logo da Marcenaria Nunes"/>
+                </a>
+            </div>
+        </div><!-- /logo do nunes -->
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item"><a href="{% url 'clientes' %}">Novo Cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                        <li class="menu-item">
+                            <button onclick="zoomIn()">Zoom +</button>
+                            <button onclick="zoomOut()">Zoom -</button>
+                        </li>
+                        <li class="menu-item">
+                            <button id="botaoModo" onclick="modoclaroescuro()">Modo Claro</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h1>Cadastro de Pedidos</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="codigoPedido">Código Pedido:</label>
+                <input type="text" id="codigoPedido" name="codigoPedido" readonly>
+            </div>
+            <div class="form-group">
+                <label for="nomecliente">Cliente:</label>
+                <select id="cliente" name="cliente" required>
+                    <option value="" disabled selected>Selecione um cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group cep">
+                <label for="cepEntrega">CEP Entrega:</label>
+                <input type="text" id="cepEntrega" name="cepEntrega">
+            </div>
+            <div class="form-group endereco">
+                <label for="enderecoEntrega">Endereço Entrega:</label>
+                <input type="text" id="enderecoEntrega" name="enderecoEntrega">
+            </div>
+            <div class="form-group numero">
+                <label for="numeroEntrega">Nº:</label>
+                <input type="text" id="numeroEntrega" name="numeroEntrega">
+            </div>
+            <div class="form-group complemento">
+                <label for="complemento">Complemento:</label>
+                <input type="text" id="complemento" name="complemento">
+            </div>
+            <div class="form-group cidade">
+                <label for="cidadeEntrega">Cidade:</label>
+                <input type="text" id="cidadeEntrega" name="cidadeEntrega">
+            </div>
+            <div class="form-group estado">
+                <label for="estadoEntrega">Estado:</label>
+                <input type="text" id="estadoEntrega" name="estadoEntrega">
+            </div>
+        </div>
+        <h2>Itens do Pedido</h2>
+        <div class="item-row">
+            <div class="form-group item">
+                <label>Item</label>
+                <input type="text" id="campovalor" value="1" readonly name="item1">
+            </div>
+            <div class="form-group descricao">
+                <label>Descrição</label>
+                <input type="text" name="descricaoItem1">
+            </div>
+            <div class="form-group quantidade">
+                <label>Quantidade</label>
+                <select name="quantidadeItem1" onchange="calcularSubtotal()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group valoruni">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valorUnitarioItem1" onchange="calcularSubtotal()">
+            </div>
+            <div class="form-group total">
+                <label>Total</label>
+                <input type="number" id="campovalor" step="0.01" name="totalItem1" readonly>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="form-group item">
+                <label>Item</label>
+                <input type="text" id="campovalor" value="2" readonly name="item2">
+            </div>
+            <div class="form-group descricao">
+                <label>Descrição</label>
+                <input type="text" name="descricaoItem2">
+            </div>
+            <div class="form-group quantidade">
+                <label>Quantidade</label>
+                <select name="quantidadeItem2" onchange="calcularSubtotal()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group valoruni">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valorUnitarioItem2" onchange="calcularSubtotal()">
+            </div>
+            <div class="form-group total">
+                <label>Total</label>
+                <input type="number" id="campovalor" step="0.01" name="totalItem2" readonly>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="form-group item">
+                <label>Item</label>
+                <input type="text" id="campovalor" value="3" readonly name="item3">
+            </div>
+            <div class="form-group descricao">
+                <label>Descrição</label>
+                <input type="text" name="descricaoItem3">
+            </div>
+            <div class="form-group quantidade">
+                <label>Quantidade</label>
+                <select name="quantidadeItem3" onchange="calcularSubtotal()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group valoruni">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valorUnitarioItem3" onchange="calcularSubtotal()">
+            </div>
+            <div class="form-group total">
+                <label>Total</label>
+                <input type="number" id="campovalor" step="0.01" name="totalItem3" readonly>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="form-group item">
+                <label>Item</label>
+                <input type="text" id="campovalor" value="4" readonly name="item4">
+            </div>
+            <div class="form-group descricao">
+                <label>Descrição</label>
+                <input type="text" name="descricaoItem4">
+            </div>
+            <div class="form-group quantidade">
+                <label>Quantidade</label>
+                <select name="quantidadeItem4" onchange="calcularSubtotal()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group valoruni">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valorUnitarioItem4" onchange="calcularSubtotal()">
+            </div>
+            <div class="form-group total">
+                <label>Total</label>
+                <input type="number" id="campovalor" step="0.01" name="totalItem4" readonly>
+            </div>
+        </div>
+        <div class="item-row">
+            <div class="form-group item">
+                <label>Item</label>
+                <input type="text" id="campovalor" value="5" readonly name="item5">
+            </div>
+            <div class="form-group descricao">
+                <label>Descrição</label>
+                <input type="text" name="descricaoItem5">
+            </div>
+            <div class="form-group quantidade">
+                <label>Quantidade</label>
+                <select name="quantidadeItem5" onchange="calcularSubtotal()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group valoruni">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valorUnitarioItem5" onchange="calcularSubtotal()">
+            </div>
+            <div class="form-group total">
+                <label>Total</label>
+                <input type="number" id="campovalor" step="0.01" name="totalItem5" readonly>
+            </div>
+        </div>
+        <div class="financial-section">
+            <div class="financial-row">
+                <div class="financial-label">Subtotal:</div>
+                <div class="financial-input">
+                    <input type="number" id="campovalor" step="0.01" name="subtotal" readonly>
+                </div>
+            </div>
+            <div class="financial-row">
+                <label class="financial-label">Acréscimo:</label>
+                <div class="financial-input">
+                    <input type="number" step="0.01" name="acrescimo" onchange="calcularTotal()">
+                </div>
+            </div>
+            <div class="financial-row">
+                <label class="financial-label">Desconto:</label>
+                <div class="financial-input">
+                    <input type="number" step="0.01" name="desconto" onchange="calcularTotal()">
+                </div>
+            </div>
+            <div class="financial-row">
+                <div class="financial-label financial-total">Total:</div>
+                <div class="financial-input">
+                    <input type="number" step="0.01" id="campovalor" name="valorTotal" readonly style="font-weight: bold;">
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label for="obsGeral">OBS Geral:</label>
+                <textarea id="obsGeral" name="obsGeral" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="pedidoFechado">Pedido Fechado:</label>
+                <select id="pedidoFechado" name="pedidoFechado">
+                    <option value="nao">Não</option>
+                    <option value="sim">Sim</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="situacao">Situação do pedido</label>
+                <select id="situacao" name="situacao">
+                    <option value="nao_iniciado">Não Iniciado</option>
+                    <option value="em_andamento">Em Andamento</option>
+                    <option value="finalizado">Finalizado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="formaPagamento">Forma de Pagamento:</label>
+                <select id="formaPagamento" name="formaPagamento">
+                    <option value="pix">Pix</option>
+                    <option value="dinheiro">Dinheiro</option>
+                    <option value="debito">Cartão de Débito</option>
+                    <option value="credito">Cartão de Crédito</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="parcelas">Número de parcelas</label>
+                <select id="parcelas" name="parcelas" onchange="calcularParcelas()">
+                    <option value="1">1x</option>
+                    <option value="2">2x</option>
+                    <option value="3">3x</option>
+                    <option value="4">4x</option>
+                    <option value="5">5x</option>
+                    <option value="6">6x</option>
+                    <option value="7">7x</option>
+                    <option value="8">8x</option>
+                    <option value="9">9x</option>
+                    <option value="10">10x</option>
+                    <option value="11">11x</option>
+                    <option value="12">12x</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="valorParcela">Valor da Parcela:</label>
+                <input type="number" id="campovalor" name="valorParcela" readonly>
+            </div>
+            <div class="form-group">
+                <label for="dataInicio">Data Início do pedido:</label>
+                <input type="date" id="dataInicio" name="dataInicio">
+            </div>
+            <div class="form-group">
+                <label for="dataEntrega">Data de Entrega:</label>
+                <input type="date" id="dataEntrega" name="dataEntrega">
+            </div>
+        </div>
+        <div class="button-group">
+            <button type="button" class="novo" onclick="desbloquearCampos()">Novo/editar</button>
+            <button type="submit">Salvar Pedido</button>
+            <button type="button" class="cancelar" onclick="cancelar()">Cancelar</button>
+            <button type="button" onclick="imprimirVersaoLimpa()">Imprimir</button>
+        </div>
+    </form>
+</main>
+
+<script>
+document.getElementById('cepEntrega').addEventListener('input', function (e) {
+    let cep = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
+ 
+    // Aplica a máscara #####-###
+    if (cep.length > 5) {
+        cep = cep.replace(/^(\d{5})(\d{0,3})/, '$1-$2');
+    }
+ 
+    e.target.value = cep;
+ 
+    // Só chama a função se tiver exatamente 8 dígitos numéricos
+    if (cep.replace(/\D/g, '').length === 8) {
+        buscarEnderecoEntrega(cep.replace(/\D/g, ''));
+    }
+});
+ 
+function buscarEnderecoEntrega(cep) {
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                alert('CEP não encontrado!');
+                return;
+            }
+            document.getElementById('enderecoEntrega').value = data.logradouro;
+            document.getElementById('cidadeEntrega').value = data.localidade;
+            document.getElementById('estadoEntrega').value = data.uf;
+        })
+        .catch(() => alert('Erro ao buscar CEP!'));
+}
+ 
+
+
+function imprimirVersaoLimpa() {
+
+const body = document.body;
+    const hoje = new Date().toLocaleDateString("pt-BR");
+ 
+    // Define atributos para rodapé dinâmico
+    body.setAttribute("data-date", hoje);
+  //  body.setAttribute("data-user", "sem uso no momento");
+ 
+    // Chama a impressão direto (sem abrir nova aba)
+    window.print();
+}
+ 
+
+    function calcularParcelas() {
+        const total = parseFloat(document.querySelector('input[name="valorTotal"]').value) || 0;
+        const parcelas = parseInt(document.querySelector('select[name="parcelas"]').value) || 1;
+        const valorParcela = total / parcelas;
+        document.querySelector('input[name="valorParcela"]').value = valorParcela.toFixed(2);
+    }
+
+    function calcularSubtotal() {
+        let subtotal = 0;
+
+        // Itera sobre os itens do pedido
+        for (let i = 1; i <= 5; i++) {
+            const quantidade = parseFloat(document.querySelector(`select[name="quantidadeItem${i}"]`).value) || 0;
+            const valorUnitario = parseFloat(document.querySelector(`input[name="valorUnitarioItem${i}"]`).value) || 0;
+            const totalItem = quantidade * valorUnitario;
+
+            // Atualiza o campo de total do item
+            document.querySelector(`input[name="totalItem${i}"]`).value = totalItem.toFixed(2);
+
+            // Soma ao subtotal
+            subtotal += totalItem;
+        }
+
+        // Atualiza o subtotal
+        document.querySelector('input[name="subtotal"]').value = subtotal.toFixed(2);
+
+        // Calcula o total com acréscimo e desconto
+        calcularTotal();
+    }
+
+function calcularTotal() {
+    const subtotal = parseFloat(document.querySelector('input[name="subtotal"]').value) || 0;
+    const acrescimo = parseFloat(document.querySelector('input[name="acrescimo"]').value) || 0;
+    const desconto = parseFloat(document.querySelector('input[name="desconto"]').value) || 0;
+
+    // Calcula o total
+    const total = subtotal + acrescimo - desconto;
+
+    // Atualiza o campo de total
+    document.querySelector('input[name="valorTotal"]').value = total.toFixed(2);
+
+    // Atualiza o valor das parcelas
+    calcularParcelas();
+}
+
+     function desbloquearCampos() {
+    const campos = document.querySelectorAll(
+      '#telefone, #cepEntrega, #enderecoEntrega, #numeroEntrega, #complemento, #cidadeEntrega, #estadoEntrega, [name^="descricaoItem"], [name^="quantidadeItem"], [name^="valorUnitarioItem"], [name="acrescimo"], [name="desconto"], #obsGeral, #pedidoFechado, #situacao, #formaPagamento, #parcelas, #dataInicio, #dataEntrega'
+    );
+        campos.forEach(campo => campo.disabled = false);
+     document.getElementById("cliente").disabled = false; 
+    }
+
+function cancelar() {
+  const campos = document.querySelectorAll(
+       '#telefone, #cepEntrega, #enderecoEntrega, #numeroEntrega, #complemento, #cidadeEntrega, #estadoEntrega, [name^="descricaoItem"], [name^="quantidadeItem"], [name^="valorUnitarioItem"], [name="acrescimo"], [name="desconto"], #obsGeral, #pedidoFechado, #situacao, #formaPagamento, #parcelas, #dataInicio, #dataEntrega'
+    );
+    campos.forEach(campo => campo.disabled = true);
+     document.getElementById("cliente").disabled = true; 
+}
+
+let scale = 1;
+
+function zoomIn() {
+  if (scale < 1.1) {
+    scale += 0.1;
+    document.body.style.transform = `scale(${scale})`;
+    document.body.style.transformOrigin = 'top left';
+  }
+}
+
+
+  function zoomOut() {
+   if (scale > 0.9) {
+    scale -= 0.1;
+    document.body.style.transform = `scale(${scale})`;
+    document.body.style.transformOrigin = 'top left';
+  }
+}
+//Modo claro e escuro 
+function modoclaroescuro() {
+    const body = document.body;
+    const botao = document.getElementById("botaoModo");
+ 
+    if (body.classList.contains("escuro")) {
+        body.classList.remove("escuro");
+        body.classList.add("claro");
+        botao.textContent = "🌙 Modo Escuro";
+        botao.classList.remove("botao-claro");
+        botao.classList.add("botao-escuro");
+    } else {
+        body.classList.remove("claro");
+        body.classList.add("escuro");
+        botao.textContent = "☀️ Modo Claro";
+        botao.classList.remove("botao-escuro");
+        botao.classList.add("botao-claro");
+    }
+}
+ 
+// Define modo inicial
+window.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("claro");
+    const botao = document.getElementById("botaoModo");
+    botao.textContent = "🌙 Modo Escuro";
+    botao.classList.add("botao-escuro");
+});
+
+
+</script>
+</body>
+</html>

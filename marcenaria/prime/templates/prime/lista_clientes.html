@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 2px solid #444;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    tr:hover {
+        background-color: #e6e6e6;
+    }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Lato:400,700,400italic,700italic" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body class="home sticky-menu sidebar-off claro" id="top">
+<header class="header">
+    <div class="header-wrap">
+        <div class="logo plain logo-left">
+            <div class="logo">
+                <a href="{% url 'home' %}">
+                    <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt="Logo da Marcenaria Nunes"/>
+                </a>
+            </div>
+        </div>
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item"><a href="{% url 'clientes' %}">Novo Cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                        <li class="menu-item">
+                            <button type="button" onclick="zoomIn()">Zoom +</button>
+                            <button type="button" onclick="zoomOut()">Zoom -</button>
+                        </li>
+                        <li class="menu-item">
+                            <button type="button" id="botaoModo" onclick="modoclaroescuro()">🌙 Modo Escuro</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<main>
+    <br>
+    <h1>Lista de Clientes</h1>
+    <form method="get" class="search-box">
+        <input type="text" name="q" placeholder="Digite o nome" value="{{ termo }}">
+        <button type="submit">Buscar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cpf }}</td>
+                <td>{{ cliente.email }}</td>
+                <td>{{ cliente.telefone1 }}</td>
+                <td>{{ cliente.cidade }}</td>
+                <td>{{ cliente.estado }}</td>
+                <td class="actions">
+                    <a href="{% url 'excluir_cliente' cliente.id %}" class="btn btn-delete" onclick="return confirm('Tem certeza que deseja excluir este cliente?');">Excluir</a>
+                    <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-edit">Editar</a>
+                    <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-pdf">Detalhes</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center;">Nenhum cliente encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+<script>
+let scale = 1;
+function zoomIn() {
+    if (scale < 1.5) {
+        scale += 0.1;
+        document.body.style.transform = `scale(${scale})`;
+        document.body.style.transformOrigin = 'top left';
+    }
+}
+function zoomOut() {
+    if (scale > 0.5) {
+        scale -= 0.1;
+        document.body.style.transform = `scale(${scale})`;
+        document.body.style.transformOrigin = 'top left';
+    }
+}
+function modoclaroescuro() {
+    const body = document.body;
+    const botao = document.getElementById("botaoModo");
+    if (body.classList.contains("escuro")) {
+        body.classList.remove("escuro");
+        body.classList.add("claro");
+        botao.textContent = "🌙 Modo Escuro";
+        botao.classList.remove("botao-claro");
+        botao.classList.add("botao-escuro");
+    } else {
+        body.classList.remove("claro");
+        body.classList.add("escuro");
+        botao.textContent = "☀️ Modo Claro";
+        botao.classList.remove("botao-escuro");
+        botao.classList.add("botao-claro");
+    }
+}
+window.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("claro");
+    const botao = document.getElementById("botaoModo");
+    if (botao) {
+        botao.textContent = "🌙 Modo Escuro";
+        botao.classList.add("botao-escuro");
+    }
+});
+</script>
+</body>
+</html>
