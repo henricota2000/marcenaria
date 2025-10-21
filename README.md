@@ -39,3 +39,6 @@ This is a web application built using the Django framework.
 3. Open your browser and navigate to 
 
     *http://127.0.0.1:8000/.*
+    
+#pao
+
