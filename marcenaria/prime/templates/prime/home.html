@@ -1,0 +1,148 @@
+{% load static %}
+<!doctype html>
+<!--
+Projeto integrador UNIVESP 
+Jaqueline Patricia de Almeida Souza..23216212
+Hernane Bini.........................2111014
+Leandro Alexander Bueno..............23219672
+Robson Izaias Fontes.................23214493
+Lucas de Oliveira Silva..............23201090
+Marcelo Jodi Maezono.................1800754
+Henrique Fernandez do Nascimento.....23214277 
+-->
+<html class="home blog no-js" lang="pt-br">
+<head>
+    <title>Projeto Integrador UNIVESP</title>
+    <meta charset="UTF-8"/>
+    <!-- Fontes externas -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Lato:400,700,400italic,700italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap">
+    <!-- CSS do projeto -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <!-- JS do projeto -->
+    <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+</head>
+<body class="home sticky-menu sidebar-off" id="top">
+
+<header class="header">
+    <div class="header-wrap">
+        <div class="logo plain logo-left">
+            <div class="logo">
+                <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt=""/>
+            </div>
+        </div><!-- /logo do nunes -->
+
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item"><a href="{% url 'clientes' %}">Novo Cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="hero" style="background-image: url('{% static 'image/wallpaper-nunes.jpg' %}')">
+    <div class="hero-inner">
+        <div class="inner">
+            <h1><span class="border border-top border-bottom">Sistema</span></h1>
+            <div class="hero-line-one"></div>
+            <div class="hero-line-two"><span class="border border-bottom"><a href="https://univesp.br/" style="color:#FFF;">by UNIVESP</a></span></div>
+        </div>
+    </div>
+</div>
+<div class="home-sticky" id="content">
+    <h2 class="home-sticky-title">Funções do sistema</h2>
+    <div class="sticky-inner">
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'pedidos' %}">
+                    <img src="{% static 'image/novo-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'pedidos' %}">Novo pedido</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'pedidos' %}">Cadastro de orçamentos e pedidos</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'clientes' %}">
+                    <img width="400" height="400" src="{% static 'image/novo-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'clientes' %}">Novo Cliente</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'clientes' %}">Cadastro de novo Cliente</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'lista_pedidos' %}">
+                    <img width="400" height="400" src="{% static 'image/busca-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'lista_pedidos' %}">Buscar pedido</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'lista_pedidos' %}">Pesquisa por orçamentos e pedidos</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+        <aside class="home-sticky-post post has-post-thumbnail sticky">
+            <span class="post-image">
+                <a href="{% url 'lista_clientes' %}">
+                    <img width="100" height="100" src="{% static 'image/busca-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                </a>
+            </span>
+            <div class="inner">
+                <h3 class="entry-title">
+                    <a href="{% url 'lista_clientes' %}">Buscar Cliente</a>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <a href="{% url 'lista_clientes' %}">Pesquisar e atualizar cadastros</a>
+                    </h3>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-wrap">
+        <div id="footer-text">2025 UNIVESP. Designed by grupo DRP04-PJI240-SALA-004 GRUPO-009</div>
+    </div>
+</footer>
+
+</body>
+</html>

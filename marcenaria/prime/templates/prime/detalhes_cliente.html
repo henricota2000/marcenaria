@@ -1,0 +1,134 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\detalhes_cliente.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Cliente</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color:rgb(0, 6, 1);
+            padding: 10px 20px;
+            color: white;
+        }
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        header nav ul li {
+            margin-right: 20px;
+        }
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        header nav ul li a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        .form-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .form-container textarea {
+            resize: none;
+            height: 100px;
+        }
+        .form-container a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .form-container a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'clientes' %}">Clientes</a></li>
+                <li><a href="{% url 'lista_clientes' %}">Lista de Clientes</a></li>
+                <li><a href="{% url 'pedidos' %}">Pedidos</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Detalhes do Cliente</h1>
+    <div class="form-container">
+        <form>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="{{ cliente.nome }}" readonly>
+
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" value="{{ cliente.cpf }}" readonly>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" value="{{ cliente.email }}" readonly>
+
+            <label for="telefone1">Telefone 1:</label>
+            <input type="text" id="telefone1" name="telefone1" value="{{ cliente.telefone1 }}" readonly>
+
+            <label for="telefone2">Telefone 2:</label>
+            <input type="text" id="telefone2" name="telefone2" value="{{ cliente.telefone2 }}" readonly>
+
+            <label for="dataNascimento">Data de Nascimento:</label>
+            <input type="date" id="dataNascimento" name="dataNascimento" value="{{ cliente.data_nascimento }}" readonly>
+
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" name="endereco" value="{{ cliente.endereco }}" readonly>
+
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" name="cidade" value="{{ cliente.cidade }}" readonly>
+
+            <label for="estado">Estado:</label>
+            <input type="text" id="estado" name="estado" value="{{ cliente.estado }}" readonly>
+
+            <label for="historicoPedidos">Histórico de Pedidos:</label>
+            <textarea id="historicoPedidos" name="historicoPedidos" readonly>{{ cliente.historico_pedidos }}</textarea>
+
+            <a href="{% url 'lista_clientes' %}">Voltar para a Lista de Clientes</a>
+        </form>
+    </div>
+</body>
+</html>
