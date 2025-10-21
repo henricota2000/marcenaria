@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pedidos</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Lato:400,700,400italic,700italic" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <style>
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    th, td {
+        border: 1.5px solid #bdbdbd;
+        padding: 12px 10px;
+        text-align: left;
+        font-family: 'Lato', Arial, sans-serif;
+        font-size: 1.05em;
+    }
+    th {
+        background-color: #f7f7f7;
+        color: #222;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    tr:nth-child(even) {
+        background-color: #f4f8fb;
+    }
+    tr:nth-child(odd) {
+        background-color: #fff;
+    }
+    tr:hover {
+        background-color: #e0e7ef;
+        transition: background 0.2s;
+    }
+    /* Bordas arredondadas nos cantos da tabela */
+    table thead tr th:first-child {
+        border-top-left-radius: 8px;
+    }
+    table thead tr th:last-child {
+        border-top-right-radius: 8px;
+    }
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    </style>
+</head>
+<body class="home sticky-menu sidebar-off claro" id="top">
+<header class="header">
+    <div class="header-wrap">
+        <div class="logo plain logo-left">
+            <div class="logo">
+                <a href="{% url 'home' %}">
+                    <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt="Logo da Marcenaria Nunes"/>
+                </a>
+            </div>
+        </div>
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item"><a href="{% url 'clientes' %}">Novo Cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
+                        <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                        <li class="menu-item">
+                            <button type="button" onclick="zoomIn()">Zoom +</button>
+                            <button type="button" onclick="zoomOut()">Zoom -</button>
+                        </li>
+                        <li class="menu-item">
+                            <button type="button" id="botaoModo" onclick="modoclaroescuro()">🌙 Modo Escuro</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<main>
+    <br>
+    <h1>Lista de Pedidos</h1>
+    <form method="get" class="search-box">
+        <input type="text" name="q" placeholder="Digite o nome" value="{{ termo }}">
+        <button type="submit">Buscar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Descrição</th>
+                <th>Data do Pedido</th>
+                <th>Forma de Pagamento</th>
+                <th>Valor Total</th>
+                <th>Parcelas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+                <td>{{ pedido.id }}</td>
+                <td>{{ pedido.cliente.nome|default:"N/A" }}</td>
+                <td>{{ pedido.descricao|default:"N/A" }}</td>
+                <td>{{ pedido.data_pedido|date:"d/m/Y" }}</td>
+                <td>{{ pedido.forma_pagamento|default:"N/A" }}</td>
+                <td>{{ pedido.valor_total|floatformat:2 }}</td>
+                <td>{{ pedido.parcelas|default:"N/A" }}</td>
+                <td>
+                    <a href="{% url 'editar_pedido' pedido.id %}" class="btn btn-edit">Editar</a>
+                    <a href="{% url 'detalhar_pedido_pdf' pedido.id %}" class="btn btn-pdf">PDF</a>
+                    <form method="post" action="{% url 'excluir_pedido' pedido.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('Tem certeza que deseja excluir este pedido?');">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">Nenhum pedido encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+<script>
+let scale = 1;
+function zoomIn() {
+    if (scale < 1.5) {
+        scale += 0.1;
+        document.body.style.transform = `scale(${scale})`;
+        document.body.style.transformOrigin = 'top left';
+    }
+}
+function zoomOut() {
+    if (scale > 0.5) {
+        scale -= 0.1;
+        document.body.style.transform = `scale(${scale})`;
+        document.body.style.transformOrigin = 'top left';
+    }
+}
+function modoclaroescuro() {
+    const body = document.body;
+    const botao = document.getElementById("botaoModo");
+    if (body.classList.contains("escuro")) {
+        body.classList.remove("escuro");
+        body.classList.add("claro");
+        botao.textContent = "🌙 Modo Escuro";
+        botao.classList.remove("botao-claro");
+        botao.classList.add("botao-escuro");
+    } else {
+        body.classList.remove("claro");
+        body.classList.add("escuro");
+        botao.textContent = "☀️ Modo Claro";
+        botao.classList.remove("botao-escuro");
+        botao.classList.add("botao-claro");
+    }
+}
+window.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("claro");
+    const botao = document.getElementById("botaoModo");
+    if (botao) {
+        botao.textContent = "🌙 Modo Escuro";
+        botao.classList.add("botao-escuro");
+    }
+});
+</script>
+</body>
+</html>

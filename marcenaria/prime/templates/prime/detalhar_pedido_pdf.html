@@ -1,0 +1,105 @@
+<!-- filepath: c:\Users\robso\Desktop\Marcenaria\prime\templates\prime\pedido_pdf.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .pedido-info, .itens-pedido {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .pedido-info th, .pedido-info td, .itens-pedido th, .itens-pedido td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .pedido-info th, .itens-pedido th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .pedido-info {
+            margin-bottom: 30px;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detalhes do Pedido</h1>
+
+    <!-- Informações do Pedido -->
+    <table class="pedido-info">
+        <tr>
+            <th>ID do Pedido</th>
+            <td>{{ pedido.id }}</td>
+        </tr>
+        <tr>
+            <th>Cliente</th>
+            <td>{{ pedido.cliente.nome }}</td>
+        </tr>
+        <tr>
+            <th>Data do Pedido</th>
+            <td>{{ pedido.data_pedido|date:"d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <th>Forma de Pagamento</th>
+            <td>{{ pedido.forma_pagamento }}</td>
+        </tr>
+        <tr>
+            <th>Parcelas</th>
+            <td>{{ pedido.parcelas }}</td>
+        </tr>
+        <tr>
+            <th>Observações</th>
+            <td>{{ pedido.obs_geral|default:"Nenhuma observação." }}</td>
+        </tr>
+    </table>
+
+    <!-- Itens do Pedido -->
+    <h2>Itens do Pedido</h2>
+    <table class="itens-pedido">
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Valor Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pedido.itens.all %}
+            <tr>
+                <td>{{ item.descricao }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
+                <td>R$ {{ item.total|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhum item encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Total do Pedido -->
+    <h2>Total do Pedido</h2>
+    <p class="total">Subtotal: R$ {{ pedido.subtotal|floatformat:2 }}</p>
+    <p class="total">Acréscimo: R$ {{ pedido.acrescimo|floatformat:2 }}</p>
+    <p class="total">Desconto: R$ {{ pedido.desconto|floatformat:2 }}</p>
+    <p class="total">Valor Total: R$ {{ pedido.valor_total|floatformat:2 }}</p>
+</body>
+</html>
