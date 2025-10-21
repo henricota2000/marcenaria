@@ -248,5 +248,15 @@ def detalhar_pedido_pdf(request, pedido_id):
     }
     return render(request, 'prime/detalhar_pedido_pdf.html', context)
 
+def adicionar_cliente(request):
+    if request.method == 'POST':
+        cliente = Cliente(
+            nome=request.POST.get('nome'),
+            email=request.POST.get('email'),
+            telefone1=request.POST.get('telefone1')
+        )
+        cliente.save()
+        return redirect('lista_clientes')
+    return render(request, 'prime/clientes.html')
 
 

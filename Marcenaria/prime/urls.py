@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),  # Certifique-se de que a função 'home' existe em 'views.py'
     path('clientes/', views.clientes, name='clientes'),
     path('lista_clientes/', views.lista_clientes, name='lista_clientes'),
+    path('clientes/adicionar/', views.adicionar_cliente, name='adicionar_cliente'),
     path('pedidos/', views.cadastrar_pedido, name='pedidos'),
     path('lista_pedidos/', views.lista_pedidos, name='lista_pedidos'),
     path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Rota para detalhes do cliente

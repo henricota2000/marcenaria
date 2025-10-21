@@ -43,8 +43,8 @@ class Cliente(models.Model):
     complemento = models.CharField(max_length=100, default="Nenhum")  # Define um valor padrão
     cidade = models.CharField(max_length=100, default="Desconhecida")  # Define um valor padrão
     estado = models.CharField(max_length=2, default="XX")  # Define um valor padrão
-    telefone1 = models.CharField(max_length=15, blank=True, default="Não informado")  # Define um valor padrão
-    telefone2 = models.CharField(max_length=15, blank=True, default="Não informado")  # Define um valor padrão
+    telefone1 = models.CharField(max_length=15, blank=True, default="Não informado", validators=[validate_telefone])  # Define um valor padrão
+    telefone2 = models.CharField(max_length=15, blank=True, default="Não informado", validators=[validate_telefone])  # Define um valor padrão
     email = models.EmailField(blank=True) ## Permitir valores nulos temporariamente
     historico_pedidos = models.TextField(blank=True, default="")  # Define um valor padrão
 
