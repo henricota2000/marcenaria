@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()  # Carrega as variáveis de ambiente do arquivo .env
 
 # Caminho base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,11 +71,15 @@ WSGI_APPLICATION = "setup.wsgi.application"
 
 # Configuração do banco de dados
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get("database_name"),
+            'USER': os.environ.get("database_user"),
+            'PASSWORD': os.environ.get("database_password"),
+            'HOST': os.environ.get("database_ip"),
+            'PORT': '5432', # Default PostgreSQL port
+        }
     }
-}
 
 # Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
