@@ -4,11 +4,16 @@ from django.template.loader import render_to_string
 from django.db import transaction, IntegrityError
 from weasyprint import HTML
 from decimal import Decimal
-from .models import Cliente, Pedido, ItemPedido
-
+from .models import Cliente, Pedido, ItemPedido, LeituraSensor
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.conf import settings
 
 def home(request):
-    return render(request, 'prime/home.html')
+    ultima_leitura = LeituraSensor.objects.order_by("-criado_em").first()
+    return render(request, 'prime/home.html', {'ultima_leitura': ultima_leitura})
 
 
 def clientes(request):
@@ -248,5 +253,39 @@ def detalhar_pedido_pdf(request, pedido_id):
     }
     return render(request, 'prime/detalhar_pedido_pdf.html', context)
 
+#parte do sensor iot
 
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
+def leitura_sensor(request):
+    # Verifica a API Key apenas no POST
+    if request.method == "POST":
+        api_key = request.headers.get("X-API-Key")
+        if api_key != settings.API_KEY_SENSOR:
+            return JsonResponse({"status": "erro", "mensagem": "Não autorizado"}, status=403)
+
+        try:
+            dados = json.loads(request.body)
+            leitura = LeituraSensor.objects.create(
+                temperatura=dados["temperatura"],
+                umidade=dados["umidade"]
+            )
+            return JsonResponse({
+                "status": "ok",
+                "id": leitura.id,
+                "temperatura": leitura.temperatura,
+                "umidade": leitura.umidade,
+                "criado_em": leitura.criado_em.isoformat()
+            }, status=201)
+        except (KeyError, json.JSONDecodeError) as e:
+            return JsonResponse({"status": "erro", "mensagem": str(e)}, status=400)
+
+    leituras = LeituraSensor.objects.order_by("-criado_em")[:100]
+    dados = [{
+        "id": l.id,
+        "temperatura": l.temperatura,
+        "umidade": l.umidade,
+        "criado_em": l.criado_em.isoformat()
+    } for l in leituras]
+    return JsonResponse({"leituras": dados})
 

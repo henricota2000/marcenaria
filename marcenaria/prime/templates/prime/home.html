@@ -60,7 +60,7 @@ Henrique Fernandez do Nascimento.....23214277
     </div>
 </div>
 <div class="home-sticky" id="content">
-    <h2 class="home-sticky-title">Funções do sistema</h2>
+    <h2 class="home-sticky-title" style="font-size: 4rem;">Funções do sistema</h2>
     <div class="sticky-inner">
 
         <aside class="home-sticky-post post has-post-thumbnail sticky">
@@ -137,12 +137,135 @@ Henrique Fernandez do Nascimento.....23214277
 
     </div>
 </div>
+<!-- Bloco sensor IoT -->
+<div class="home-sticky" id="sensor">
+    <h2 class="home-sticky-title" style="font-size: 4rem">Monitor de Temperatura</h2>
+    <div class="sticky-inner" style="justify-content: center; gap: 40px; padding: 30px;">
 
+        {% if ultima_leitura %}
+
+            <!-- Temperatura -->
+            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
+                <div class="inner">
+                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                        <span id="sensor-temp">{{ ultima_leitura.temperatura }}°C</span>
+                    </h3>
+                    <ul class="meta top">
+                        <h3 class="entry-title-2">Temperatura</h3>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Umidade -->
+            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
+                <div class="inner">
+                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                        <span id="sensor-umidade">{{ ultima_leitura.umidade }}%</span>
+                    </h3>
+                    <ul class="meta top">
+                        <h3 class="entry-title-2">Umidade</h3>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Status -->
+            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
+                <div class="inner">
+                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                        <span id="sensor-status">
+                            {% if ultima_leitura.umidade < 40 %}✗ Alerta
+                            {% elif ultima_leitura.umidade <= 65 %}✓ OK
+                            {% else %}⚠ Atenção{% endif %}
+                        </span>
+                    </h3>
+                    <ul class="meta top">
+                        <h3 class="entry-title-2">
+                            <span id="sensor-status-desc">
+                                {% if ultima_leitura.umidade < 40 %}Umidade baixa
+                                {% elif ultima_leitura.umidade <= 65 %}Umidade ideal
+                                {% else %}Umidade alta{% endif %}
+                            </span>
+                        </h3>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Última atualização -->
+            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
+                <div class="inner">
+                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                        <span id="sensor-hora">
+                            {{ ultima_leitura.criado_em|date:"d/m/Y" }}
+                            {{ ultima_leitura.criado_em|time:"H:i:s" }}
+                        </span>
+                    </h3>
+                    <ul class="meta top">
+                        <h3 class="entry-title-2">Última leitura</h3>
+                    </ul>
+                </div>
+            </aside>
+
+        {% else %}
+            <p style="text-align: center; padding: 20px;" id="sensor-vazio">
+                Nenhuma leitura disponível ainda.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
 <footer class="footer">
     <div class="footer-wrap">
         <div id="footer-text">2025 UNIVESP. Designed by grupo DRP04-PJI240-SALA-004 GRUPO-009</div>
     </div>
 </footer>
+<script>
+  function atualizarSensor() {
+    fetch('/api/sensor/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.leituras.length === 0) return;
 
+        const leitura = data.leituras[0];  // pega a mais recente
+
+        // Atualiza temperatura
+        document.getElementById('sensor-temp').textContent = leitura.temperatura + '°C';
+
+        // Atualiza umidade
+        document.getElementById('sensor-umidade').textContent = leitura.umidade + '%';
+
+        // Atualiza horário
+        const data_hora = new Date(leitura.criado_em);
+        document.getElementById('sensor-hora').textContent =
+          data_hora.toLocaleDateString('pt-BR') + ' ' +
+          data_hora.toLocaleTimeString('pt-BR');
+
+        // Atualiza status
+        const umidade = leitura.umidade;
+        const statusEl = document.getElementById('sensor-status');
+        const statusDescEl = document.getElementById('sensor-status-desc');
+
+        if (umidade < 40) {
+          statusEl.textContent = '✗ Alerta';
+          statusEl.style.color = 'red';
+          statusDescEl.textContent = 'Risco de Incêndio';
+        } else if (umidade >= 40 && umidade <= 65) {
+          statusEl.textContent = '✓ OK';
+          statusEl.style.color = 'green';
+          statusDescEl.textContent = 'Faixa Ideal';
+        } else {
+          statusEl.textContent = '⚠ Atenção';
+          statusEl.style.color = 'orange';
+          statusDescEl.textContent = 'Risco de Apodrecimento';
+        }
+      })
+      .catch(error => console.log('Erro ao buscar sensor:', error));
+  }
+
+  // Atualiza imediatamente ao carregar
+  atualizarSensor();
+
+  // Atualiza a cada 30 segundos
+  setInterval(atualizarSensor, 30000);
+</script>
 </body>
 </html>

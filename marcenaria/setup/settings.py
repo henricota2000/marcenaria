@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configurações de segurança
 SECRET_KEY = "django-insecure-*25%pxcl0tu$n#pl6yulw^3!8rlwa^gb7@$b28a5g$g=x!=b4l"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Aplicativos instalados
 INSTALLED_APPS = [
@@ -71,15 +71,11 @@ WSGI_APPLICATION = "setup.wsgi.application"
 
 # Configuração do banco de dados
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get("database_name"),
-            'USER': os.environ.get("database_user"),
-            'PASSWORD': os.environ.get("database_password"),
-            'HOST': os.environ.get("database_ip"),
-            'PORT': '5432', # Default PostgreSQL port
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 # Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
@@ -115,3 +111,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 # Configuração do campo padrão para chaves primárias
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#SEGURANÇA DO ESP8266
+API_KEY_SENSOR = 'ESP-MARCENARIA-2026'

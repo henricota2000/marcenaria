@@ -16,4 +16,5 @@ urlpatterns = [
     path('editar_pedido/<int:pedido_id>/', views.editar_pedido, name='editar_pedido'),
     path('excluir_pedido/<int:pedido_id>/', views.excluir_pedido, name='excluir_pedido'),
     path('detalhar_pedido_pdf/<int:pedido_id>/', views.detalhar_pedido_pdf, name='detalhar_pedido_pdf'),
+    path('api/sensor/', views.leitura_sensor, name='leitura_sensor'),
 ]
