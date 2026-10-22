@@ -10,10 +10,87 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from datetime import timedelta
+from django.db.models import Avg, Max, Min
+from django.utils import timezone
 
 def home(request):
-    ultima_leitura = LeituraSensor.objects.order_by("-criado_em").first()
-    return render(request, 'prime/home.html', {'ultima_leitura': ultima_leitura})
+    # 1. Busca as últimas 50 leituras (invertendo para ordem cronológica no gráfico)
+    ultimas_qs = LeituraSensor.objects.order_by("-criado_em")[:50]
+    ultima_leitura = ultimas_qs.first()
+    leituras = list(reversed(ultimas_qs))
+
+    # 2. Estatísticas Gerais (Mínima, Média e Máxima no banco)
+    estatisticas = LeituraSensor.objects.aggregate(
+        temp_media=Avg('temperatura'),
+        temp_max=Max('temperatura'),
+        temp_min=Min('temperatura'),
+        umid_media=Avg('umidade'),
+        umid_max=Max('umidade'),
+        umid_min=Min('umidade'),
+    )
+
+    labels_historico = []
+    temp_historico = []
+    umid_historico = []
+    tempos_x = []
+
+    for l in leituras:
+        hora_local = timezone.localtime(l.criado_em).strftime('%H:%M')
+        labels_historico.append(hora_local)
+        temp_historico.append(round(l.temperatura, 2))
+        umid_historico.append(round(l.umidade, 2))
+        tempos_x.append(l.criado_em.timestamp())
+
+    # 3. Projeção de Machine Learning (prevê os próximos 5 ciclos)
+    PASSOS_FUTUROS = 5
+    labels_projecao = []
+    temp_projecao = []
+    umid_projecao = []
+
+    if len(leituras) >= 5:
+        # Calcula o intervalo médio real entre os envios do seu sensor
+        deltas = [tempos_x[i] - tempos_x[i - 1] for i in range(1, len(tempos_x))]
+        intervalo_medio = sum(deltas) / len(deltas) if deltas else 300
+
+        ultimo_dt = leituras[-1].criado_em
+        tempos_futuros = []
+
+        for i in range(1, PASSOS_FUTUROS + 1):
+            dt_futuro = ultimo_dt + timedelta(seconds=intervalo_medio * i)
+            tempos_futuros.append(dt_futuro.timestamp())
+            labels_projecao.append(timezone.localtime(dt_futuro).strftime('%H:%M') + ' (Prev)')
+
+        # Executa o modelo de regressão linear para Temperatura e Umidade
+        temp_projecao = _projetar_regressao_linear(tempos_x, temp_historico, tempos_futuros)
+        umid_projecao = _projetar_regressao_linear(tempos_x, umid_historico, tempos_futuros)
+
+    # 4. Prepara as listas unificadas para o Chart.js
+    labels_completos = labels_historico + labels_projecao
+    serie_temp_real = temp_historico + [None] * len(labels_projecao)
+    serie_umid_real = umid_historico + [None] * len(labels_projecao)
+
+    if temp_projecao and temp_historico:
+        serie_temp_pred = ([None] * (len(temp_historico) - 1)) + [temp_historico[-1]] + temp_projecao
+        serie_umid_pred = ([None] * (len(umid_historico) - 1)) + [umid_historico[-1]] + umid_projecao
+    else:
+        serie_temp_pred = []
+        serie_umid_pred = []
+
+    context = {
+        'ultima_leitura': ultima_leitura,  # Mantido igual ao seu original para não quebrar nada!
+        'estatisticas': estatisticas,
+        'ultimas_leituras_tabela': ultimas_qs[:10],
+        'proxima_temp_prevista': temp_projecao[0] if temp_projecao else None,
+        'proxima_umid_prevista': umid_projecao[0] if umid_projecao else None,
+        'labels_json': json.dumps(labels_completos),
+        'temp_real_json': json.dumps(serie_temp_real),
+        'temp_pred_json': json.dumps(serie_temp_pred),
+        'umid_real_json': json.dumps(serie_umid_real),
+        'umid_pred_json': json.dumps(serie_umid_pred),
+    }
+
+    return render(request, 'prime/home.html', context)
 
 
 def clientes(request):
@@ -289,3 +366,25 @@ def leitura_sensor(request):
     } for l in leituras]
     return JsonResponse({"leituras": dados})
 
+def _projetar_regressao_linear(tempos_x, valores_y, tempos_futuros):
+    """
+    Calcula a Regressão Linear Simples (y = a*x + b) por Mínimos Quadrados
+    e retorna os valores projetados para os timestamps futuros.
+    """
+    n = len(tempos_x)
+    # Normaliza o eixo X subtraindo o tempo inicial para evitar números gigantescos
+    t0 = tempos_x[0]
+    x = [t - t0 for t in tempos_x]
+    
+    media_x = sum(x) / n
+    media_y = sum(valores_y) / n
+
+    numerador = sum((x[i] - media_x) * (valores_y[i] - media_y) for i in range(n))
+    denominador = sum((x[i] - media_x) ** 2 for i in range(n))
+
+    # Inclinação (a) e Intercepto (b) da reta de tendência
+    a = numerador / denominador if denominador != 0 else 0
+    b = media_y - (a * media_x)
+
+    # Faz a predição para os tempos futuros
+    return [round(a * (tf - t0) + b, 2) for tf in tempos_futuros]

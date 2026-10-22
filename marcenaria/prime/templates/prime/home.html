@@ -14,6 +14,7 @@ Henrique Fernandez do Nascimento.....23214277
 <head>
     <title>Projeto Integrador UNIVESP</title>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <!-- Fontes externas -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Lato:400,700,400italic,700italic">
@@ -24,6 +25,84 @@ Henrique Fernandez do Nascimento.....23214277
     <!-- JS do projeto -->
     <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
     <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <!-- Chart.js para os gráficos do Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Container isolado para os 5 cards ficarem alinhados e centralizados */
+        .sensor-cards-row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            align-items: flex-start !important;
+            gap: 25px !important;
+            max-width: 1300px !important;
+            margin: 0 auto 30px auto !important;
+            padding: 20px 15px !important;
+            clear: both !important;
+            float: none !important;
+        }
+        /* Remove o float original do style.css que quebrava os cards */
+        .sensor-card-item {
+            float: none !important;
+            width: 220px !important;
+            margin: 0 !important;
+            text-align: center !important;
+            padding: 15px 10px !important;
+        }
+        /* Container dos Gráficos centralizado exatamente embaixo dos dados */
+        .dashboard-charts-grid {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 30px !important;
+            max-width: 1200px !important;
+            width: 100% !important;
+            margin: 10px auto 50px auto !important;
+            padding: 0 20px !important;
+            clear: both !important;
+            float: none !important;
+            box-sizing: border-box !important;
+        }
+        .chart-box {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            flex: 1 1 480px;
+            max-width: 560px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .chart-box h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            color: #333;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sub-stats {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 6px;
+            font-family: 'Lato', sans-serif;
+        }
+        .ml-badge {
+            display: inline-block;
+            background: #222;
+            color: #ffc107;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+    </style>
 </head>
 <body class="home sticky-menu sidebar-off" id="top">
 
@@ -31,7 +110,7 @@ Henrique Fernandez do Nascimento.....23214277
     <div class="header-wrap">
         <div class="logo plain logo-left">
             <div class="logo">
-                <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt=""/>
+                <img width="100" height="100" src="{% static 'image/logo-nunes.png' %}" class="Marcenaria nunes" alt="Logo Marcenaria Nunes"/>
             </div>
         </div><!-- /logo do nunes -->
 
@@ -43,6 +122,7 @@ Henrique Fernandez do Nascimento.....23214277
                         <li class="menu-item"><a href="{% url 'pedidos' %}">Novo pedido</a></li>
                         <li class="menu-item"><a href="{% url 'lista_clientes' %}">Buscar cliente</a></li>
                         <li class="menu-item"><a href="{% url 'lista_pedidos' %}">Buscar Pedido</a></li>
+                        <li class="menu-item"><a href="#sensor">Dashboard IoT</a></li>
                     </ul>
                 </div>
             </div>
@@ -59,6 +139,7 @@ Henrique Fernandez do Nascimento.....23214277
         </div>
     </div>
 </div>
+
 <div class="home-sticky" id="content">
     <h2 class="home-sticky-title" style="font-size: 4rem;">Funções do sistema</h2>
     <div class="sticky-inner">
@@ -66,7 +147,7 @@ Henrique Fernandez do Nascimento.....23214277
         <aside class="home-sticky-post post has-post-thumbnail sticky">
             <span class="post-image">
                 <a href="{% url 'pedidos' %}">
-                    <img src="{% static 'image/novo-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                    <img src="{% static 'image/novo-pedido.jpg' %}" class="attachment-sticky size-sticky" alt="Novo Pedido"/>
                 </a>
             </span>
             <div class="inner">
@@ -84,7 +165,7 @@ Henrique Fernandez do Nascimento.....23214277
         <aside class="home-sticky-post post has-post-thumbnail sticky">
             <span class="post-image">
                 <a href="{% url 'clientes' %}">
-                    <img width="400" height="400" src="{% static 'image/novo-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                    <img width="400" height="400" src="{% static 'image/novo-cliente.jpg' %}" class="attachment-sticky size-sticky" alt="Novo Cliente"/>
                 </a>
             </span>
             <div class="inner">
@@ -102,7 +183,7 @@ Henrique Fernandez do Nascimento.....23214277
         <aside class="home-sticky-post post has-post-thumbnail sticky">
             <span class="post-image">
                 <a href="{% url 'lista_pedidos' %}">
-                    <img width="400" height="400" src="{% static 'image/busca-pedido.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                    <img width="400" height="400" src="{% static 'image/busca-pedido.jpg' %}" class="attachment-sticky size-sticky" alt="Buscar Pedido"/>
                 </a>
             </span>
             <div class="inner">
@@ -120,7 +201,7 @@ Henrique Fernandez do Nascimento.....23214277
         <aside class="home-sticky-post post has-post-thumbnail sticky">
             <span class="post-image">
                 <a href="{% url 'lista_clientes' %}">
-                    <img width="100" height="100" src="{% static 'image/busca-cliente.jpg' %}" class="attachment-sticky size-sticky" alt=""/>
+                    <img width="100" height="100" src="{% static 'image/busca-cliente.jpg' %}" class="attachment-sticky size-sticky" alt="Buscar Cliente"/>
                 </a>
             </span>
             <div class="inner">
@@ -137,73 +218,91 @@ Henrique Fernandez do Nascimento.....23214277
 
     </div>
 </div>
-<!-- Bloco sensor IoT -->
-<div class="home-sticky" id="sensor">
-    <h2 class="home-sticky-title" style="font-size: 4rem">Monitor de Temperatura</h2>
-    <div class="sticky-inner" style="justify-content: center; gap: 40px; padding: 30px;">
+
+<!-- Bloco Dashboard & Sensor IoT + Machine Learning -->
+<div class="home-sticky" id="sensor" style="clear: both; overflow: hidden;">
+    <h2 class="home-sticky-title" style="font-size: 4rem">Dashboard de Clima & Predição ML</h2>
+    
+    <!-- Linha 1: Os 5 Indicadores alinhados lado a lado no centro -->
+    <div class="sensor-cards-row">
 
         {% if ultima_leitura %}
 
-            <!-- Temperatura -->
-            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
-                <div class="inner">
-                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
-                        <span id="sensor-temp">{{ ultima_leitura.temperatura }}°C</span>
-                    </h3>
-                    <ul class="meta top">
-                        <h3 class="entry-title-2">Temperatura</h3>
-                    </ul>
+            <!-- Card 1: Temperatura Atual -->
+            <div class="sensor-card-item">
+                <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                    <span id="sensor-temp">{{ ultima_leitura.temperatura|floatformat:1 }}°C</span>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">Temperatura Atual</h3>
+                </ul>
+                <div class="sub-stats">
+                    Mín: {{ estatisticas.temp_min|floatformat:1 }}° | Máx: {{ estatisticas.temp_max|floatformat:1 }}°
                 </div>
-            </aside>
+            </div>
 
-            <!-- Umidade -->
-            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
-                <div class="inner">
-                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
-                        <span id="sensor-umidade">{{ ultima_leitura.umidade }}%</span>
-                    </h3>
-                    <ul class="meta top">
-                        <h3 class="entry-title-2">Umidade</h3>
-                    </ul>
+            <!-- Card 2: Umidade Atual -->
+            <div class="sensor-card-item">
+                <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                    <span id="sensor-umidade">{{ ultima_leitura.umidade|floatformat:1 }}%</span>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">Umidade Atual</h3>
+                </ul>
+                <div class="sub-stats">
+                    Mín: {{ estatisticas.umid_min|floatformat:1 }}% | Máx: {{ estatisticas.umid_max|floatformat:1 }}%
                 </div>
-            </aside>
+            </div>
 
-            <!-- Status -->
-            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
-                <div class="inner">
-                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
-                        <span id="sensor-status">
-                            {% if ultima_leitura.umidade < 40 %}✗ Alerta
-                            {% elif ultima_leitura.umidade <= 65 %}✓ OK
-                            {% else %}⚠ Atenção{% endif %}
+            <!-- Card 3: Status de Conservação -->
+            <div class="sensor-card-item">
+                <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
+                    <span id="sensor-status" style="{% if ultima_leitura.umidade < 40 %}color: red;{% elif ultima_leitura.umidade <= 65 %}color: green;{% else %}color: orange;{% endif %}">
+                        {% if ultima_leitura.umidade < 40 %}✗ Alerta
+                        {% elif ultima_leitura.umidade <= 65 %}✓ OK
+                        {% else %}⚠ Atenção{% endif %}
+                    </span>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">
+                        <span id="sensor-status-desc">
+                            {% if ultima_leitura.umidade < 40 %}Risco de Incêndio
+                            {% elif ultima_leitura.umidade <= 65 %}Faixa Ideal
+                            {% else %}Risco de Apodrecimento{% endif %}
                         </span>
                     </h3>
-                    <ul class="meta top">
-                        <h3 class="entry-title-2">
-                            <span id="sensor-status-desc">
-                                {% if ultima_leitura.umidade < 40 %}Umidade baixa
-                                {% elif ultima_leitura.umidade <= 65 %}Umidade ideal
-                                {% else %}Umidade alta{% endif %}
-                            </span>
-                        </h3>
-                    </ul>
-                </div>
-            </aside>
+                </ul>
+            </div>
 
-            <!-- Última atualização -->
-            <aside class="home-sticky-post post sticky" style="text-align: center; min-width: 200px;">
-                <div class="inner">
-                    <h3 class="entry-title" style="font-size: 3rem; margin: 0;">
-                        <span id="sensor-hora">
-                            {{ ultima_leitura.criado_em|date:"d/m/Y" }}
-                            {{ ultima_leitura.criado_em|time:"H:i:s" }}
-                        </span>
-                    </h3>
-                    <ul class="meta top">
-                        <h3 class="entry-title-2">Última leitura</h3>
-                    </ul>
-                </div>
-            </aside>
+            <!-- Card 4: Projeção Machine Learning -->
+            <div class="sensor-card-item">
+                <span class="ml-badge"><i class="fa fa-line-chart"></i> Projeção ML</span>
+                <h3 class="entry-title" style="font-size: 2.3rem; margin: 4px 0;">
+                    <span id="ml-next-temp">
+                        {% if proxima_temp_prevista %}{{ proxima_temp_prevista|floatformat:1 }}°C{% else %}--{% endif %}
+                    </span>
+                    /
+                    <span id="ml-next-umid">
+                        {% if proxima_umid_prevista %}{{ proxima_umid_prevista|floatformat:1 }}%{% else %}--{% endif %}
+                    </span>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">Tendência Próx. Leitura</h3>
+                </ul>
+            </div>
+
+            <!-- Card 5: Última Atualização -->
+            <div class="sensor-card-item">
+                <h3 class="entry-title" style="font-size: 2.1rem; margin: 8px 0;">
+                    <span id="sensor-hora">
+                        {{ ultima_leitura.criado_em|date:"d/m/Y" }}
+                        {{ ultima_leitura.criado_em|time:"H:i:s" }}
+                    </span>
+                </h3>
+                <ul class="meta top">
+                    <h3 class="entry-title-2">Última leitura</h3>
+                </ul>
+            </div>
 
         {% else %}
             <p style="text-align: center; padding: 20px;" id="sensor-vazio">
@@ -212,60 +311,234 @@ Henrique Fernandez do Nascimento.....23214277
         {% endif %}
 
     </div>
+
+    <!-- Linha 2: Gráficos Centralizados Embaixo dos Dados -->
+    {% if ultima_leitura %}
+    <div class="dashboard-charts-grid">
+        <div class="chart-box">
+            <h3><i class="fa fa-thermometer-half" style="color: #dc3545;"></i> Curva de Temperatura & Projeção ML (°C)</h3>
+            <canvas id="graficoTemperatura" height="210"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3><i class="fa fa-tint" style="color: #0d6efd;"></i> Curva de Umidade & Projeção ML (%)</h3>
+            <canvas id="graficoUmidade" height="210"></canvas>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
 <footer class="footer">
     <div class="footer-wrap">
         <div id="footer-text">2025 UNIVESP. Designed by grupo DRP04-PJI240-SALA-004 GRUPO-009</div>
     </div>
 </footer>
+
 <script>
-  function atualizarSensor() {
-    fetch('/api/sensor/')
-      .then(response => response.json())
-      .then(data => {
-        if (data.leituras.length === 0) return;
+    // 1. Inicialização dos Gráficos com os dados processados pelo Django (views.py)
+    const labelsIniciais = {{ labels_json|default:"[]"|safe }};
+    const tempRealInicial = {{ temp_real_json|default:"[]"|safe }};
+    const tempPredInicial = {{ temp_pred_json|default:"[]"|safe }};
+    const umidRealInicial = {{ umid_real_json|default:"[]"|safe }};
+    const umidPredInicial = {{ umid_pred_json|default:"[]"|safe }};
 
-        const leitura = data.leituras[0];  // pega a mais recente
+    let chartTemp = null;
+    let chartUmid = null;
 
-        // Atualiza temperatura
-        document.getElementById('sensor-temp').textContent = leitura.temperatura + '°C';
+    const canvasTemp = document.getElementById('graficoTemperatura');
+    const canvasUmid = document.getElementById('graficoUmidade');
 
-        // Atualiza umidade
-        document.getElementById('sensor-umidade').textContent = leitura.umidade + '%';
+    if (canvasTemp && canvasUmid) {
+        chartTemp = new Chart(canvasTemp, {
+            type: 'line',
+            data: {
+                labels: labelsIniciais,
+                datasets: [
+                    {
+                        label: 'Histórico Real (°C)',
+                        data: tempRealInicial,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Projeção ML (°C)',
+                        data: tempPredInicial,
+                        borderColor: '#ff9800',
+                        borderDash: [6, 6],
+                        pointStyle: 'rectRot',
+                        pointRadius: 5,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false }
+            }
+        });
 
-        // Atualiza horário
-        const data_hora = new Date(leitura.criado_em);
-        document.getElementById('sensor-hora').textContent =
-          data_hora.toLocaleDateString('pt-BR') + ' ' +
-          data_hora.toLocaleTimeString('pt-BR');
+        chartUmid = new Chart(canvasUmid, {
+            type: 'line',
+            data: {
+                labels: labelsIniciais,
+                datasets: [
+                    {
+                        label: 'Histórico Real (%)',
+                        data: umidRealInicial,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Projeção ML (%)',
+                        data: umidPredInicial,
+                        borderColor: '#00bcd4',
+                        borderDash: [6, 6],
+                        pointStyle: 'rectRot',
+                        pointRadius: 5,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false }
+            }
+        });
+    }
 
-        // Atualiza status
-        const umidade = leitura.umidade;
-        const statusEl = document.getElementById('sensor-status');
-        const statusDescEl = document.getElementById('sensor-status-desc');
+    // 2. Função auxiliar de Regressão Linear no Front-End para recalcular ao vivo no fetch()
+    function projetarRegressaoJS(temposX, valoresY, temposFuturos) {
+        const n = temposX.length;
+        const t0 = temposX[0];
+        const x = temposX.map(t => t - t0);
 
-        if (umidade < 40) {
-          statusEl.textContent = '✗ Alerta';
-          statusEl.style.color = 'red';
-          statusDescEl.textContent = 'Risco de Incêndio';
-        } else if (umidade >= 40 && umidade <= 65) {
-          statusEl.textContent = '✓ OK';
-          statusEl.style.color = 'green';
-          statusDescEl.textContent = 'Faixa Ideal';
-        } else {
-          statusEl.textContent = '⚠ Atenção';
-          statusEl.style.color = 'orange';
-          statusDescEl.textContent = 'Risco de Apodrecimento';
+        const mediaX = x.reduce((a, b) => a + b, 0) / n;
+        const mediaY = valoresY.reduce((a, b) => a + b, 0) / n;
+
+        let num = 0, den = 0;
+        for (let i = 0; i < n; i++) {
+            num += (x[i] - mediaX) * (valoresY[i] - mediaY);
+            den += Math.pow(x[i] - mediaX, 2);
         }
-      })
-      .catch(error => console.log('Erro ao buscar sensor:', error));
-  }
 
-  // Atualiza imediatamente ao carregar
-  atualizarSensor();
+        const a = den !== 0 ? num / den : 0;
+        const b = mediaY - (a * mediaX);
 
-  // Atualiza a cada 30 segundos
-  setInterval(atualizarSensor, 30000);
+        return temposFuturos.map(tf => Number((a * (tf - t0) + b).toFixed(2)));
+    }
+
+    // 3. Atualização em Tempo Real (Cards + Projeção ML + Gráficos) a cada 30s
+    function atualizarSensor() {
+        fetch('/api/sensor/')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.leituras || data.leituras.length === 0) return;
+
+                const leitura = data.leituras[0]; // Mais recente
+
+                // Atualiza cards principais
+                const tempEl = document.getElementById('sensor-temp');
+                const umidEl = document.getElementById('sensor-umidade');
+                const horaEl = document.getElementById('sensor-hora');
+                const statusEl = document.getElementById('sensor-status');
+                const statusDescEl = document.getElementById('sensor-status-desc');
+
+                if (tempEl) tempEl.textContent = Number(leitura.temperatura).toFixed(1) + '°C';
+                if (umidEl) umidEl.textContent = Number(leitura.umidade).toFixed(1) + '%';
+
+                if (horaEl) {
+                    const data_hora = new Date(leitura.criado_em);
+                    horaEl.textContent =
+                        data_hora.toLocaleDateString('pt-BR') + ' ' +
+                        data_hora.toLocaleTimeString('pt-BR');
+                }
+
+                // Atualiza status e cores de conservação
+                const umidade = leitura.umidade;
+                if (statusEl && statusDescEl) {
+                    if (umidade < 40) {
+                        statusEl.textContent = '✗ Alerta';
+                        statusEl.style.color = 'red';
+                        statusDescEl.textContent = 'Risco de Incêndio';
+                    } else if (umidade >= 40 && umidade <= 65) {
+                        statusEl.textContent = '✓ OK';
+                        statusEl.style.color = 'green';
+                        statusDescEl.textContent = 'Faixa Ideal';
+                    } else {
+                        statusEl.textContent = '⚠ Atenção';
+                        statusEl.style.color = 'orange';
+                        statusDescEl.textContent = 'Risco de Apodrecimento';
+                    }
+                }
+
+                // Atualiza os gráficos e a projeção ML dinamicamente com as últimas 50 leituras da API
+                const historico = data.leituras.slice(0, 50).reverse();
+                if (historico.length >= 5 && chartTemp && chartUmid) {
+                    const labelsHist = [];
+                    const tempHist = [];
+                    const umidHist = [];
+                    const temposX = [];
+
+                    historico.forEach(item => {
+                        const dt = new Date(item.criado_em);
+                        labelsHist.push(dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+                        tempHist.push(Number(item.temperatura.toFixed(2)));
+                        umidHist.push(Number(item.umidade.toFixed(2)));
+                        temposX.push(dt.getTime() / 1000);
+                    });
+
+                    // Calcula intervalo médio e projeta 5 passos futuros
+                    let somaDeltas = 0;
+                    for (let i = 1; i < temposX.length; i++) {
+                        somaDeltas += (temposX[i] - temposX[i - 1]);
+                    }
+                    const intervaloMedio = (somaDeltas / (temposX.length - 1)) || 300;
+                    const ultimoTempo = temposX[temposX.length - 1];
+
+                    const temposFuturos = [];
+                    const labelsProj = [];
+                    for (let i = 1; i <= 5; i++) {
+                        const tf = ultimoTempo + (intervaloMedio * i);
+                        temposFuturos.push(tf);
+                        const dtFut = new Date(tf * 1000);
+                        labelsProj.push(dtFut.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' (Prev)');
+                    }
+
+                    const tempProj = projetarRegressaoJS(temposX, tempHist, temposFuturos);
+                    const umidProj = projetarRegressaoJS(temposX, umidHist, temposFuturos);
+
+                    // Atualiza card de Próxima Leitura ML
+                    const mlTempEl = document.getElementById('ml-next-temp');
+                    const mlUmidEl = document.getElementById('ml-next-umid');
+                    if (mlTempEl) mlTempEl.textContent = tempProj[0].toFixed(1) + '°C';
+                    if (mlUmidEl) mlUmidEl.textContent = umidProj[0].toFixed(1) + '%';
+
+                    // Reconstrói séries dos gráficos
+                    const nulosHist = Array(tempHist.length - 1).fill(null);
+                    const nulosProj = Array(labelsProj.length).fill(null);
+
+                    chartTemp.data.labels = labelsHist.concat(labelsProj);
+                    chartTemp.data.datasets[0].data = tempHist.concat(nulosProj);
+                    chartTemp.data.datasets[1].data = nulosHist.concat([tempHist[tempHist.length - 1]]).concat(tempProj);
+                    chartTemp.update('none');
+
+                    chartUmid.data.labels = labelsHist.concat(labelsProj);
+                    chartUmid.data.datasets[0].data = umidHist.concat(nulosProj);
+                    chartUmid.data.datasets[1].data = nulosHist.concat([umidHist[umidHist.length - 1]]).concat(umidProj);
+                    chartUmid.update('none');
+                }
+            })
+            .catch(error => console.log('Erro ao buscar sensor:', error));
+    }
+
+    // Atualiza imediatamente ao carregar e a cada 30 segundos
+    atualizarSensor();
+    setInterval(atualizarSensor, 30000);
 </script>
 </body>
 </html>
